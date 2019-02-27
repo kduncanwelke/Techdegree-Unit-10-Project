@@ -24,7 +24,6 @@
 		2DA89E0122247205004266EB /* Mars.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA89E0022247205004266EB /* Mars.swift */; };
 		2DA89E032224766B004266EB /* Daily.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA89E022224766B004266EB /* Daily.swift */; };
 		2DA89E05222479D3004266EB /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA89E04222479D3004266EB /* Errors.swift */; };
-		2DA89E0722247C7A004266EB /* HandleResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA89E0622247C7A004266EB /* HandleResponse.swift */; };
 		2DA89E0922247E22004266EB /* SearchType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA89E0822247E22004266EB /* SearchType.swift */; };
 		2DA89E0B222480B3004266EB /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA89E0A222480B3004266EB /* DataManager.swift */; };
 /* End PBXBuildFile section */
@@ -42,7 +41,7 @@
 /* Begin PBXFileReference section */
 		2D2F05982221F87A00F3627F /* NASA App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "NASA App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D2F059B2221F87B00F3627F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		2D2F059D2221F87B00F3627F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		2D2F059D2221F87B00F3627F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		2D2F05A02221F87B00F3627F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		2D2F05A22221F87C00F3627F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2D2F05A52221F87C00F3627F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -61,7 +60,6 @@
 		2DA89E0022247205004266EB /* Mars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mars.swift; sourceTree = "<group>"; };
 		2DA89E022224766B004266EB /* Daily.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Daily.swift; sourceTree = "<group>"; };
 		2DA89E04222479D3004266EB /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
-		2DA89E0622247C7A004266EB /* HandleResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandleResponse.swift; sourceTree = "<group>"; };
 		2DA89E0822247E22004266EB /* SearchType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchType.swift; sourceTree = "<group>"; };
 		2DA89E0A222480B3004266EB /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -133,7 +131,6 @@
 				2DA89E0A222480B3004266EB /* DataManager.swift */,
 				2D2F05BE2222080100F3627F /* Result.swift */,
 				2D2F05C02222083F00F3627F /* JSONDecoder.swift */,
-				2DA89E0622247C7A004266EB /* HandleResponse.swift */,
 				2D2F05C2222208B200F3627F /* Endpoint.swift */,
 				2DA89E04222479D3004266EB /* Errors.swift */,
 			);
@@ -259,7 +256,6 @@
 				2DA89E0B222480B3004266EB /* DataManager.swift in Sources */,
 				2D2F059C2221F87B00F3627F /* AppDelegate.swift in Sources */,
 				2DA89E0922247E22004266EB /* SearchType.swift in Sources */,
-				2DA89E0722247C7A004266EB /* HandleResponse.swift in Sources */,
 				2DA89DFF222465AC004266EB /* Earth.swift in Sources */,
 				2D2F05C12222083F00F3627F /* JSONDecoder.swift in Sources */,
 				2D2F05BF2222080100F3627F /* Result.swift in Sources */,

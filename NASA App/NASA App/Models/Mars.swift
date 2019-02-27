@@ -9,7 +9,11 @@
 import Foundation
 
 struct Mars: SearchType {
+	let photos: [Photo]
+	static var endpoint = Endpoint.mars
+}
+
+struct Photo: Codable {
 	let imgSrc: String
 	let earthDate: String
-	static var endpoint = Endpoint.mars
 }

@@ -12,7 +12,7 @@ struct MarsSearch {
 	var sol: Int
 	var rover: Rover
 	
-	static var marsSearch = MarsSearch(sol: 0, rover: Rover.noSelection)
+	static var marsSearch = MarsSearch(sol: 0, rover: Rover.curiosity)
 	
 	enum Rover: String {
 		case curiosity = "curiosity"

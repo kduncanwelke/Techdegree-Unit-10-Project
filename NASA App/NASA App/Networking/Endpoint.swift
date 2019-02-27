@@ -27,7 +27,7 @@ enum Endpoint {
 			let latitude = EarthSearch.earthSearch.latitude
 			let longitude = EarthSearch.earthSearch.longitude
 			
-			var components = URLComponents(url: baseURL.appendingPathComponent("planetary/earth/imagery"), resolvingAgainstBaseURL: false)
+			var components = URLComponents(url: baseURL.appendingPathComponent("planetary/earth/imagery/"), resolvingAgainstBaseURL: false)
 			components!.queryItems = [URLQueryItem(name: "lon", value: "\(longitude)"), URLQueryItem(name: "lat", value: "\(latitude)"), URLQueryItem(name: "api_key", value: "\(key)")]
 			return components!.url!
 		case .mars:

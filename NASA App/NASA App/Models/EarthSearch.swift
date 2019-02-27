@@ -12,5 +12,5 @@ struct EarthSearch {
 	var latitude: Double
 	var longitude: Double
 	
-	static var earthSearch = EarthSearch(latitude: 0.0, longitude: 0.0)
+	static var earthSearch = EarthSearch(latitude: 1.5, longitude: 100.75)
 }
