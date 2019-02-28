@@ -11,5 +11,6 @@ import Foundation
 struct DailyPhotoSearch {
 	var date: String
 	
-	static let photoSearch = DailyPhotoSearch(date: "2019-02-23")
+	// return today's photo by default
+	static let photoSearch = DailyPhotoSearch(date: "")
 }

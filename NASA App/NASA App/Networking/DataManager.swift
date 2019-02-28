@@ -23,8 +23,8 @@ struct DataManager<T: SearchType> {
 		}
 	}
 	
-	static func fetch(with page: Int, completion: @escaping (Result<[T]>) -> Void) {
-		fetch(url: T.endpoint.url(with: 1)) { result in
+	static func fetch(with page: Int?, completion: @escaping (Result<[T]>) -> Void) {
+		fetch(url: T.endpoint.url(with: page)) { result in
 			switch result {
 			case .success(let result):
 				var data: [T] = []

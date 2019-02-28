@@ -11,6 +11,8 @@ import Foundation
 struct EarthSearch {
 	var latitude: Double
 	var longitude: Double
+	var dim: Float
 	
-	static var earthSearch = EarthSearch(latitude: 1.5, longitude: 100.75)
+	// 129 lon lat 70
+	static var earthSearch = EarthSearch(latitude: 20.0, longitude: 100.0, dim: 0.1)
 }

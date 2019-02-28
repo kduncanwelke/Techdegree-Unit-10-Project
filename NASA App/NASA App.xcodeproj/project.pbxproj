@@ -20,6 +20,7 @@
 		2D2F05C62222157C00F3627F /* EarthSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D2F05C52222157C00F3627F /* EarthSearch.swift */; };
 		2D2F05C82222165A00F3627F /* MarsSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D2F05C72222165A00F3627F /* MarsSearch.swift */; };
 		2D2F05CA2222186F00F3627F /* DailyPhotoSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D2F05C92222186F00F3627F /* DailyPhotoSearch.swift */; };
+		2D9D650422273D2D0017E9C6 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D9D650322273D2D0017E9C6 /* Extensions.swift */; };
 		2DA89DFF222465AC004266EB /* Earth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA89DFE222465AC004266EB /* Earth.swift */; };
 		2DA89E0122247205004266EB /* Mars.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA89E0022247205004266EB /* Mars.swift */; };
 		2DA89E032224766B004266EB /* Daily.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA89E022224766B004266EB /* Daily.swift */; };
@@ -41,7 +42,7 @@
 /* Begin PBXFileReference section */
 		2D2F05982221F87A00F3627F /* NASA App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "NASA App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D2F059B2221F87B00F3627F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		2D2F059D2221F87B00F3627F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; wrapsLines = 0; };
+		2D2F059D2221F87B00F3627F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ViewController.swift; sourceTree = "<group>"; wrapsLines = 1; };
 		2D2F05A02221F87B00F3627F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		2D2F05A22221F87C00F3627F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2D2F05A52221F87C00F3627F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -56,6 +57,7 @@
 		2D2F05C52222157C00F3627F /* EarthSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthSearch.swift; sourceTree = "<group>"; };
 		2D2F05C72222165A00F3627F /* MarsSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarsSearch.swift; sourceTree = "<group>"; };
 		2D2F05C92222186F00F3627F /* DailyPhotoSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyPhotoSearch.swift; sourceTree = "<group>"; };
+		2D9D650322273D2D0017E9C6 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		2DA89DFE222465AC004266EB /* Earth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Earth.swift; sourceTree = "<group>"; };
 		2DA89E0022247205004266EB /* Mars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mars.swift; sourceTree = "<group>"; };
 		2DA89E022224766B004266EB /* Daily.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Daily.swift; sourceTree = "<group>"; };
@@ -106,8 +108,9 @@
 				2D2F059B2221F87B00F3627F /* AppDelegate.swift */,
 				2D2F05C42222155E00F3627F /* Models */,
 				2D2F05BB222207BA00F3627F /* Networking */,
-				2D2F059D2221F87B00F3627F /* ViewController.swift */,
+				2D9D650222273CB10017E9C6 /* Views */,
 				2D2F059F2221F87B00F3627F /* Main.storyboard */,
+				2D9D650322273D2D0017E9C6 /* Extensions.swift */,
 				2D2F05A22221F87C00F3627F /* Assets.xcassets */,
 				2D2F05A42221F87C00F3627F /* LaunchScreen.storyboard */,
 				2D2F05A72221F87C00F3627F /* Info.plist */,
@@ -149,6 +152,14 @@
 				2DA89E022224766B004266EB /* Daily.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		2D9D650222273CB10017E9C6 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				2D2F059D2221F87B00F3627F /* ViewController.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -263,6 +274,7 @@
 				2DA89E0122247205004266EB /* Mars.swift in Sources */,
 				2DA89E05222479D3004266EB /* Errors.swift in Sources */,
 				2D2F05C82222165A00F3627F /* MarsSearch.swift in Sources */,
+				2D9D650422273D2D0017E9C6 /* Extensions.swift in Sources */,
 				2D2F05C3222208B200F3627F /* Endpoint.swift in Sources */,
 				2D2F05CA2222186F00F3627F /* DailyPhotoSearch.swift in Sources */,
 				2D2F05BD222207E000F3627F /* Networker.swift in Sources */,

@@ -9,7 +9,7 @@
 import Foundation
 
 struct Daily: SearchType {
-	let date: String
+	var date: String
 	let title: String
 	let explanation: String
 	let url: String

@@ -26,9 +26,10 @@ enum Endpoint {
 		case .earth:
 			let latitude = EarthSearch.earthSearch.latitude
 			let longitude = EarthSearch.earthSearch.longitude
+			let dim = EarthSearch.earthSearch.dim
 			
 			var components = URLComponents(url: baseURL.appendingPathComponent("planetary/earth/imagery/"), resolvingAgainstBaseURL: false)
-			components!.queryItems = [URLQueryItem(name: "lon", value: "\(longitude)"), URLQueryItem(name: "lat", value: "\(latitude)"), URLQueryItem(name: "api_key", value: "\(key)")]
+			components!.queryItems = [URLQueryItem(name: "lon", value: "\(longitude)"), URLQueryItem(name: "lat", value: "\(latitude)"), URLQueryItem(name: "dim", value: "\(dim)"), URLQueryItem(name: "api_key", value: "\(key)")]
 			return components!.url!
 		case .mars:
 			let sol = MarsSearch.marsSearch.sol
