@@ -14,9 +14,16 @@ struct Mars: SearchType {
 }
 
 struct Photo: Codable {
+	let sol: Int
 	let imgSrc: String
 	let earthDate: String
+	let camera: Camera
 	let rover: Rover
+}
+
+struct Camera: Codable {
+	let name: String
+	let fullName: String
 }
 
 struct Rover: Codable {

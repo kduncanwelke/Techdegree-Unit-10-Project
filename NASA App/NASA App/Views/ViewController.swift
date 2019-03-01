@@ -20,6 +20,9 @@ class ViewController: UIViewController {
 	@IBOutlet weak var marsPhotoTitle: UILabel!
 	@IBOutlet weak var earthPhotoTitle: UILabel!
 	
+	var currentDaily: Daily?
+	var currentRover: Mars?
+	var currentEarth: Earth?
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -34,6 +37,7 @@ class ViewController: UIViewController {
 						self.showAlert(title: "Connection failed", message: "Json response failed, please try again later.")
 						return
 					}
+					self.currentDaily = photo
 					self.dailyPhoto.getImage(imageUrl: photo.url)
 					self.dailyPhotoTitle.text = photo.title
 					self.dailyPhotoTitle.adjustsFontSizeToFitWidth = true
@@ -59,6 +63,7 @@ class ViewController: UIViewController {
 						self.showAlert(title: "Connection failed", message: "Json response failed, please try again later.")
 						return
 					}
+					self.currentRover = response.first
 					self.roverPhoto.getImage(imageUrl: image)
 					guard let title = response.first?.photos.first else { return }
 					self.marsPhotoTitle.text = "\(title.rover.name), \(title.earthDate)"
@@ -84,6 +89,7 @@ class ViewController: UIViewController {
 						self.showAlert(title: "Connection failed", message: "Json response failed, please try again later.")
 						return
 					}
+					self.currentEarth = photo
 					self.earthPhoto.getImage(imageUrl: photo.url)
 					self.earthPhotoTitle.text = "\(EarthSearch.earthSearch.latitude), \(EarthSearch.earthSearch.longitude)"
 				}
@@ -99,6 +105,48 @@ class ViewController: UIViewController {
 			}
 		}
 		
+	}
+	
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+		if segue.destination is APODViewController {
+			let destinationViewController = segue.destination as? APODViewController
+			guard let current = currentDaily else { return }
+			destinationViewController?.photo = dailyPhoto.image
+			destinationViewController?.photoTitle = current.title
+			destinationViewController?.date = current.date
+			destinationViewController?.explanation = current.explanation
+		} else if segue.destination is MarsRoverViewController {
+			let destinationViewController = segue.destination as? MarsRoverViewController
+			guard let current = currentRover else { return }
+			print(current)
+			destinationViewController?.photo = roverPhoto.image
+			destinationViewController?.roverTitle = current.photos.first?.rover.name
+			destinationViewController?.date = current.photos.first?.earthDate
+			if let martianYear = current.photos.first?.sol {
+				destinationViewController?.sol = String(martianYear)
+			}
+			destinationViewController?.cameraName = current.photos.first?.camera.name
+			destinationViewController?.fullCameraName = current.photos.first?.camera.fullName
+		} else if segue.destination is EarthViewController {
+			let destinationViewController = segue.destination as? EarthViewController
+			guard let current = currentEarth else { return }
+			destinationViewController?.photo = earthPhoto.image
+			destinationViewController?.date = current.date
+		}
+	}
+	
+	// MARK: IBActions
+	
+	@IBAction func dailyPhotoTapped(_ sender: Any) {
+		performSegue(withIdentifier: "showAPOD", sender: Any?.self)
+	}
+	
+	@IBAction func marsPhotoTapped(_ sender: Any) {
+		performSegue(withIdentifier: "showMars", sender: Any?.self)
+	}
+	
+	@IBAction func earthPhotoTapped(_ sender: Any) {
+		performSegue(withIdentifier: "showEarth", sender: Any?.self)
 	}
 }
 
