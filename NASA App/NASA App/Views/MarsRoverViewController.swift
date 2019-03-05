@@ -89,23 +89,12 @@ class MarsRoverViewController: UIViewController {
 						self.showAlert(title: "Connection failed", message: "Json response failed, please try again later.")
 						return
 					}
-					let previousCount = self.marsPhotos.count
+					
 					for photo in response {
 						self.marsPhotos.append(photo)
+						self.collectionView.insertItems(at: [IndexPath(item: self.marsPhotos.count - 1, section: 0)])
 					}
-					let newCount = self.marsPhotos.count
-					let startIndex = newCount - previousCount
-					var indexPathsToReload: [IndexPath] = []
-					
-					
-					print(self.collectionView!.numberOfItems(inSection: 0))
-					
-					for path in startIndex..<self.collectionView!.numberOfItems(inSection: 0) {
-						indexPathsToReload.append(IndexPath(item: path, section: 0))
-						print(path)
-					}
-					
-					self.collectionView.reloadItems(at: indexPathsToReload)
+
 				}
 			case .failure(let error):
 				DispatchQueue.main.async {
@@ -147,36 +136,7 @@ extension MarsRoverViewController: UICollectionViewDataSource {
 
 extension MarsRoverViewController: UICollectionViewDataSourcePrefetching {
 	func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-		print("prefetch triggered")
-		for path in indexPaths {
-			if path.row > marsPhotos.count - 3 {
-				fetchMorePhotos()
-				print("called fetch")
-			}
-		}
-	}
-	
-}
-
-//if indexPaths.contains(where: isLoadingCell)
-
-private extension MarsRoverViewController {
-	func visibleIndexPathsToReload(intersecting indexPaths: [IndexPath]) -> [IndexPath] {
-		let indexPathsForVisibleRows = collectionView.indexPathsForVisibleItems
-		let indexPathsIntersection = Set(indexPathsForVisibleRows).intersection(indexPaths)
-		return Array(indexPathsIntersection)
-	}
-	
-	func onFetchCompleted(with newIndexPathsToReload: [IndexPath]?) {
-		guard let newIndexPathsToReload = newIndexPathsToReload else {
-			collectionView.isHidden = false
-			collectionView.reloadData()
-			collectionView!.numberOfItems(inSection: 1)
-			return
-		}
-		let indexPathsToReload = visibleIndexPathsToReload(intersecting: newIndexPathsToReload)
-		collectionView.reloadItems(at: indexPathsToReload)
-		collectionView!.numberOfItems(inSection: 1)
+		fetchMorePhotos()
 	}
 }
 
