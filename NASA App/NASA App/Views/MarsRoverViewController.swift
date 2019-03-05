@@ -16,6 +16,10 @@ class MarsRoverViewController: UIViewController {
 	@IBOutlet weak var cameraLabel: UILabel!
 	@IBOutlet weak var fullCameraNameLabel: UILabel!
 	@IBOutlet weak var solLabel: UILabel!
+	@IBOutlet weak var collectionView: UICollectionView!
+	
+	var marsPhotos: [Photo] = []
+	var currentPage = 1
 	
 	var photo: UIImage?
 	var roverTitle: String?
@@ -26,6 +30,10 @@ class MarsRoverViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+		
+		collectionView.delegate = self
+		collectionView.dataSource = self
+		collectionView.prefetchDataSource = self
 
         // Do any additional setup after loading the view.
 		image.image = photo
@@ -34,8 +42,83 @@ class MarsRoverViewController: UIViewController {
 		solLabel.text = sol
 		cameraLabel.text = cameraName
 		fullCameraNameLabel.text = fullCameraName
+		
+		DataManager<Mars>.fetch(with: currentPage) { result in
+			switch result {
+			case .success(let response):
+				DispatchQueue.main.async {
+					guard let response = response.first?.photos else {
+						self.showAlert(title: "Connection failed", message: "Json response failed, please try again later.")
+						return
+					}
+					for photo in response {
+						self.marsPhotos.append(photo)
+					}
+					self.collectionView.reloadData()
+				}
+			case .failure(let error):
+				DispatchQueue.main.async {
+					switch error {
+					case Errors.networkError:
+						self.showAlert(title: "Networking failed", message: "\(Errors.networkError.localizedDescription)")
+					default:
+						self.showAlert(title: "Networking failed", message: "\(error.localizedDescription)")
+					}
+				}
+			}
+		}
     }
-    
+	
+	
+	func loadUI(photo: Photo) {
+		image.getImage(imageUrl: photo.imgSrc)
+		titleLabel.text = photo.rover.name
+		dateLabel.text = photo.earthDate
+		solLabel.text = "\(photo.sol)"
+		cameraLabel.text = photo.camera.name
+		fullCameraNameLabel.text = photo.camera.fullName
+	}
+	
+	func fetchMorePhotos() {
+		currentPage += 1
+		DataManager<Mars>.fetch(with: currentPage) { result in
+			switch result {
+			case .success(let response):
+				DispatchQueue.main.async {
+					guard let response = response.first?.photos else {
+						self.showAlert(title: "Connection failed", message: "Json response failed, please try again later.")
+						return
+					}
+					let previousCount = self.marsPhotos.count
+					for photo in response {
+						self.marsPhotos.append(photo)
+					}
+					let newCount = self.marsPhotos.count
+					let startIndex = newCount - previousCount
+					var indexPathsToReload: [IndexPath] = []
+					
+					
+					print(self.collectionView!.numberOfItems(inSection: 0))
+					
+					for path in startIndex..<self.collectionView!.numberOfItems(inSection: 0) {
+						indexPathsToReload.append(IndexPath(item: path, section: 0))
+						print(path)
+					}
+					
+					self.collectionView.reloadItems(at: indexPathsToReload)
+				}
+			case .failure(let error):
+				DispatchQueue.main.async {
+					switch error {
+					case Errors.networkError:
+						self.showAlert(title: "Networking failed", message: "\(Errors.networkError.localizedDescription)")
+					default:
+						self.showAlert(title: "Networking failed", message: "\(error.localizedDescription)")
+					}
+				}
+			}
+		}
+	}
 
     /*
     // MARK: - Navigation
@@ -47,4 +130,58 @@ class MarsRoverViewController: UIViewController {
     }
     */
 
+}
+
+extension MarsRoverViewController: UICollectionViewDataSource {
+	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+		return marsPhotos.count
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "marsCell", for: indexPath) as! MarsCollectionViewCell
+		cell.image.getImage(imageUrl: marsPhotos[indexPath.row].imgSrc)
+		return cell
+	}
+	
+}
+
+extension MarsRoverViewController: UICollectionViewDataSourcePrefetching {
+	func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+		print("prefetch triggered")
+		for path in indexPaths {
+			if path.row > marsPhotos.count - 3 {
+				fetchMorePhotos()
+				print("called fetch")
+			}
+		}
+	}
+	
+}
+
+//if indexPaths.contains(where: isLoadingCell)
+
+private extension MarsRoverViewController {
+	func visibleIndexPathsToReload(intersecting indexPaths: [IndexPath]) -> [IndexPath] {
+		let indexPathsForVisibleRows = collectionView.indexPathsForVisibleItems
+		let indexPathsIntersection = Set(indexPathsForVisibleRows).intersection(indexPaths)
+		return Array(indexPathsIntersection)
+	}
+	
+	func onFetchCompleted(with newIndexPathsToReload: [IndexPath]?) {
+		guard let newIndexPathsToReload = newIndexPathsToReload else {
+			collectionView.isHidden = false
+			collectionView.reloadData()
+			collectionView!.numberOfItems(inSection: 1)
+			return
+		}
+		let indexPathsToReload = visibleIndexPathsToReload(intersecting: newIndexPathsToReload)
+		collectionView.reloadItems(at: indexPathsToReload)
+		collectionView!.numberOfItems(inSection: 1)
+	}
+}
+
+extension MarsRoverViewController: UICollectionViewDelegate {
+	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+		loadUI(photo: marsPhotos[indexPath.row])
+	}
 }

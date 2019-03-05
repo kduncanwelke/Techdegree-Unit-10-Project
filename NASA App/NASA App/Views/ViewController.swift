@@ -31,7 +31,7 @@ class ViewController: UIViewController {
 		DataManager<Daily>.fetch(with: nil) { result in
 			switch result {
 			case .success(let response):
-				print(response)
+				//print(response)
 				DispatchQueue.main.async {
 					guard let photo = response.first else {
 						self.showAlert(title: "Connection failed", message: "Json response failed, please try again later.")
@@ -57,7 +57,7 @@ class ViewController: UIViewController {
 		DataManager<Mars>.fetch(with: nil) { result in
 			switch result {
 			case .success(let response):
-				print(response)
+				//print(response)
 				DispatchQueue.main.async {
 					guard let image = response.first?.photos.first?.imgSrc else {
 						self.showAlert(title: "Connection failed", message: "Json response failed, please try again later.")
@@ -83,7 +83,7 @@ class ViewController: UIViewController {
 		DataManager<Earth>.fetch(with: nil) { result in
 			switch result {
 			case .success(let response):
-				print(response)
+				//print(response)
 				DispatchQueue.main.async {
 					guard let photo = response.first else {
 						self.showAlert(title: "Connection failed", message: "Json response failed, please try again later.")
@@ -107,6 +107,14 @@ class ViewController: UIViewController {
 		
 	}
 	
+	override func viewWillAppear(_ animated: Bool) {
+		self.navigationController?.setNavigationBarHidden(true, animated: false)
+	}
+	
+	override func viewWillDisappear(_ animated: Bool) {
+		self.navigationController?.setNavigationBarHidden(false, animated: false)
+	}
+	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		if segue.destination is APODViewController {
 			let destinationViewController = segue.destination as? APODViewController
@@ -118,7 +126,6 @@ class ViewController: UIViewController {
 		} else if segue.destination is MarsRoverViewController {
 			let destinationViewController = segue.destination as? MarsRoverViewController
 			guard let current = currentRover else { return }
-			print(current)
 			destinationViewController?.photo = roverPhoto.image
 			destinationViewController?.roverTitle = current.photos.first?.rover.name
 			destinationViewController?.date = current.photos.first?.earthDate

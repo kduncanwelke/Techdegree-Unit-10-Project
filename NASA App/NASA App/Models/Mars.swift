@@ -30,4 +30,5 @@ struct Rover: Codable {
 	let name: String
 	let landingDate: String
 	let maxDate: String
+	let totalPhotos: Int
 }

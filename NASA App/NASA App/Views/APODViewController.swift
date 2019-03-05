@@ -16,11 +16,14 @@ class APODViewController: UIViewController {
 	@IBOutlet weak var titleLabel: UILabel!
 	@IBOutlet weak var dateLabel: UILabel!
 	@IBOutlet weak var explanationLabel: UILabel!
+	@IBOutlet weak var collectionView: UICollectionView!
 	
 	var photo: UIImage?
 	var photoTitle: String?
 	var date: String?
 	var explanation: String?
+	
+	var dailyPhotos: [Daily] = []
 	
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,3 +47,17 @@ class APODViewController: UIViewController {
     */
 
 }
+
+/*extension APODViewController: UICollectionViewDataSource {
+	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+	
+	}
+}
+
+extension APODViewController: UICollectionViewDelegate {
+	
+}*/
