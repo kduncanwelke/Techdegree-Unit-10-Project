@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreLocation
 
 class ViewController: UIViewController {
 	
@@ -23,10 +24,16 @@ class ViewController: UIViewController {
 	var currentDaily: Daily?
 	var currentRover: Mars?
 	var currentEarth: Earth?
+	let locationManager = CLLocationManager()
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		// Do any additional setup after loading the view, typically from a nib.
+		
+		locationManager.delegate = self
+		locationManager.desiredAccuracy = kCLLocationAccuracyBest
+		locationManager.requestLocation()
+		locationManager.startUpdatingLocation()
 		
 		DataManager<Daily>.fetch(with: nil) { result in
 			switch result {
@@ -119,10 +126,8 @@ class ViewController: UIViewController {
 		if segue.destination is APODViewController {
 			let destinationViewController = segue.destination as? APODViewController
 			guard let current = currentDaily else { return }
+			destinationViewController?.dailyPhoto = current
 			destinationViewController?.photo = dailyPhoto.image
-			destinationViewController?.photoTitle = current.title
-			destinationViewController?.date = current.date
-			destinationViewController?.explanation = current.explanation
 		} else if segue.destination is MarsRoverViewController {
 			let destinationViewController = segue.destination as? MarsRoverViewController
 			guard let current = currentRover else { return }
@@ -157,3 +162,22 @@ class ViewController: UIViewController {
 	}
 }
 
+extension ViewController: CLLocationManagerDelegate {
+	func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+		if let lat = locations.last?.coordinate.latitude, let long = locations.last?.coordinate.longitude, let location = locations.last {
+			print("current location: \(lat) \(long)")
+			
+			EarthSearch.earthSearch.latitude = lat
+			EarthSearch.earthSearch.longitude = long
+			
+			earthPhotoTitle.text = "\(lat), \(long)"
+			print("\(lat) \(long)")
+		} else {
+			showAlert(title: "Geolocation failed", message: "Coordinates could not be found. Please check that location services are enabled.")
+		}
+	}
+	
+	func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+		showAlert(title: "Geolocation failed", message: "\(error)")
+	}
+}

@@ -12,7 +12,23 @@ struct MarsSearch {
 	var sol: Int
 	var rover: Rover
 	
-	static var marsSearch = MarsSearch(sol: 50, rover: Rover.curiosity)
+	static var solDate = Int.random(in: 0...2200)
+	
+	static var chosenRover: Rover = {
+		let randomRover = Int.random(in: 1...3)
+		if randomRover == 1 {
+			return Rover.curiosity
+		} else if randomRover == 2 {
+			return Rover.opportunity
+		} else if randomRover == 3 {
+			return Rover.spirit
+		} else {
+			return Rover.noSelection
+		}
+	}()
+	
+	
+	static var marsSearch = MarsSearch(sol: solDate, rover: chosenRover)
 	
 	enum Rover: String {
 		case curiosity = "curiosity"

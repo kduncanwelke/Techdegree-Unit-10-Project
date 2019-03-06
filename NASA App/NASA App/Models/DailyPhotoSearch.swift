@@ -12,5 +12,5 @@ struct DailyPhotoSearch {
 	var date: String
 	
 	// return today's photo by default
-	static let photoSearch = DailyPhotoSearch(date: "")
+	static var photoSearch = DailyPhotoSearch(date: "")
 }
