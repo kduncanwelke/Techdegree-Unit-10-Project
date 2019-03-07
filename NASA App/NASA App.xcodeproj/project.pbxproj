@@ -25,6 +25,8 @@
 		2D91C2132228A289004BC072 /* MarsRoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D91C2122228A289004BC072 /* MarsRoverViewController.swift */; };
 		2D91C2152228A293004BC072 /* EarthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D91C2142228A293004BC072 /* EarthViewController.swift */; };
 		2D9D650422273D2D0017E9C6 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D9D650322273D2D0017E9C6 /* Extensions.swift */; };
+		2D9E0AAF22307F5900FF8BCB /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D9E0AAE22307F5900FF8BCB /* LocationManager.swift */; };
+		2D9E0AB12230843300FF8BCB /* LocationSearchTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D9E0AB02230843300FF8BCB /* LocationSearchTableViewController.swift */; };
 		2DA89DFF222465AC004266EB /* Earth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA89DFE222465AC004266EB /* Earth.swift */; };
 		2DA89E0122247205004266EB /* Mars.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA89E0022247205004266EB /* Mars.swift */; };
 		2DA89E032224766B004266EB /* Daily.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA89E022224766B004266EB /* Daily.swift */; };
@@ -66,6 +68,8 @@
 		2D91C2122228A289004BC072 /* MarsRoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarsRoverViewController.swift; sourceTree = "<group>"; };
 		2D91C2142228A293004BC072 /* EarthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthViewController.swift; sourceTree = "<group>"; };
 		2D9D650322273D2D0017E9C6 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		2D9E0AAE22307F5900FF8BCB /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		2D9E0AB02230843300FF8BCB /* LocationSearchTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSearchTableViewController.swift; sourceTree = "<group>"; };
 		2DA89DFE222465AC004266EB /* Earth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Earth.swift; sourceTree = "<group>"; };
 		2DA89E0022247205004266EB /* Mars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mars.swift; sourceTree = "<group>"; };
 		2DA89E022224766B004266EB /* Daily.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Daily.swift; sourceTree = "<group>"; };
@@ -154,6 +158,7 @@
 				2D2F05C52222157C00F3627F /* EarthSearch.swift */,
 				2D2F05C72222165A00F3627F /* MarsSearch.swift */,
 				2D2F05C92222186F00F3627F /* DailyPhotoSearch.swift */,
+				2D9E0AAE22307F5900FF8BCB /* LocationManager.swift */,
 				2DA89E0822247E22004266EB /* SearchType.swift */,
 				2DA89DFE222465AC004266EB /* Earth.swift */,
 				2DA89E0022247205004266EB /* Mars.swift */,
@@ -170,6 +175,7 @@
 				2D91C2122228A289004BC072 /* MarsRoverViewController.swift */,
 				2D59BF7B222B4B3F0073A295 /* MarsCollectionViewCell.swift */,
 				2D91C2142228A293004BC072 /* EarthViewController.swift */,
+				2D9E0AB02230843300FF8BCB /* LocationSearchTableViewController.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -283,6 +289,7 @@
 				2D59BF7C222B4B3F0073A295 /* MarsCollectionViewCell.swift in Sources */,
 				2DA89DFF222465AC004266EB /* Earth.swift in Sources */,
 				2D2F05C12222083F00F3627F /* JSONDecoder.swift in Sources */,
+				2D9E0AB12230843300FF8BCB /* LocationSearchTableViewController.swift in Sources */,
 				2D91C2132228A289004BC072 /* MarsRoverViewController.swift in Sources */,
 				2D2F05BF2222080100F3627F /* Result.swift in Sources */,
 				2DA89E032224766B004266EB /* Daily.swift in Sources */,
@@ -292,6 +299,7 @@
 				2D2F05C82222165A00F3627F /* MarsSearch.swift in Sources */,
 				2D9D650422273D2D0017E9C6 /* Extensions.swift in Sources */,
 				2D2F05C3222208B200F3627F /* Endpoint.swift in Sources */,
+				2D9E0AAF22307F5900FF8BCB /* LocationManager.swift in Sources */,
 				2D2F05CA2222186F00F3627F /* DailyPhotoSearch.swift in Sources */,
 				2D2F05BD222207E000F3627F /* Networker.swift in Sources */,
 				2D2F05C62222157C00F3627F /* EarthSearch.swift in Sources */,

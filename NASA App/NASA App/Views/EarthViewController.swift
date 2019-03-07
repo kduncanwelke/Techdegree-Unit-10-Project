@@ -7,35 +7,129 @@
 //
 
 import UIKit
+import CoreLocation
+import MapKit
 
-class EarthViewController: UIViewController {
+class EarthViewController: UIViewController, UITableViewDelegate {
+	
+	// MARK: IBOutlets
 	
 	@IBOutlet weak var image: UIImageView!
 	@IBOutlet weak var locationLabel: UILabel!
+	@IBOutlet weak var coordinatesLabel: UILabel!
 	@IBOutlet weak var dateLabel: UILabel!
+	@IBOutlet weak var mapView: MKMapView!
 	
+	
+	// MARK: Variables
+	
+	let locationManager = CLLocationManager()
 	var photo: UIImage?
 	var date: String?
+	var searchController = UISearchController(searchResultsController: nil)
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+		locationManager.delegate = self
+		mapView.delegate = self
+		
+		locationManager.desiredAccuracy = kCLLocationAccuracyBest
+		locationManager.requestLocation()
+		locationManager.startUpdatingLocation()
+		
 		image.image = photo
-		locationLabel.text = "Lat: \(EarthSearch.earthSearch.latitude), Long: \(EarthSearch.earthSearch.longitude)"
+		coordinatesLabel.text = "Lat: \(EarthSearch.earthSearch.latitude), Long: \(EarthSearch.earthSearch.longitude)"
 		let displayDate = date?.prefix(10)
 		dateLabel.text = String(displayDate ?? "No date")
+		
+		// set up search bar
+		let resultsTableController = LocationSearchTableViewController()
+		
+		resultsTableController.tableView.delegate = resultsTableController
+		resultsTableController.mapView = mapView
+		
+		searchController = UISearchController(searchResultsController: resultsTableController)
+		searchController.searchResultsUpdater = resultsTableController
+		searchController.searchBar.autocapitalizationType = .none
+		
+		searchController.searchBar.placeholder = "Type to search . . ."
+		searchController.delegate = self
+		searchController.searchBar.delegate = self // Monitor when the search button is tapped.
     }
+	
+	// set searchcontroller here, otherwise it won't load right
+	override func viewDidAppear(_ animated: Bool) {
+		navigationItem.searchController = searchController
+		navigationItem.hidesSearchBarWhenScrolling = false
+		definesPresentationContext = true
+	}
     
+}
 
-    /*
-    // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
+// add location functionality
+extension EarthViewController: CLLocationManagerDelegate, MKMapViewDelegate {
+	func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+		if let lat = locations.last?.coordinate.latitude, let long = locations.last?.coordinate.longitude, let location = locations.last {
+			print("current location: \(lat) \(long)")
+			let regionRadius: CLLocationDistance = 1000
+			
+			let region = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: regionRadius, longitudinalMeters: regionRadius)
+			mapView.setRegion(region, animated: true)
+			
+			if let lastLocation = self.locationManager.location {
+				let geocoder = CLGeocoder()
+				
+				// look up the location name
+				geocoder.reverseGeocodeLocation(lastLocation, completionHandler: { (placemarks, error) in
+					if error == nil {
+						guard let firstLocation = placemarks?[0] else { return }
+						self.locationLabel.text = LocationManager.parseAddress(selectedItem: firstLocation)
+					}
+					else {
+						// an error occurred during geocoding
+						print("error")
+					}
+				})
+			} else {
+				showAlert(title: "Geolocation failed", message: "Coordinates could not be found. Please check that location services are enabled.")
+			}
+		}
+	}
+	
+	func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+		showAlert(title: "Geolocation failed", message: "\(error)")
+	}
+	/*
+	func lookUpCurrentLocation(completionHandler: @escaping (CLPlacemark?) -> Void ) {
+		// use the last reported location
+		if let lastLocation = self.locationManager.location {
+			let geocoder = CLGeocoder()
+			
+			// look up the location name
+			geocoder.reverseGeocodeLocation(lastLocation, completionHandler: { (placemarks, error) in
+				if error == nil {
+					let firstLocation = placemarks?[0]
+					completionHandler(firstLocation)
+				}
+				else {
+					// an error occurred during geocoding
+					completionHandler(nil)
+				}
+			})
+		}
+		else {
+			// no location was available
+			completionHandler(nil)
+		}
+	}
+*/
+}
 
+extension EarthViewController: UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate {
+	// function needed to satisfy compiler
+	func updateSearchResults(for searchController: UISearchController) {
+	}
 }

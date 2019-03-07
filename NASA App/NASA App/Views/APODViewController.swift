@@ -18,6 +18,8 @@ class APODViewController: UIViewController {
 	@IBOutlet weak var explanationLabel: UILabel!
 	@IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 	
+	// MARK: Variables
+	
 	let firstDate = Date()
 	var currentDateDisplayed = Date()
 	let dateFormatter = DateFormatter()
@@ -55,6 +57,8 @@ class APODViewController: UIViewController {
     }
     */
 	
+	// MARK: Custom functions
+	
 	func updateUI(for photo: Daily) {
 		image.getImage(imageUrl: photo.url)
 		titleLabel.text = photo.title
@@ -91,6 +95,8 @@ class APODViewController: UIViewController {
 			}
 		}
 	}
+	
+	// MARK: IBActions
 	
 	@IBAction func nextButtonPressed(_ sender: Any) {
 		let previousDay = Calendar.current.date(byAdding: .day, value: -1, to: currentDateDisplayed)

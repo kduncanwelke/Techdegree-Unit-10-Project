@@ -10,6 +10,8 @@ import UIKit
 
 class MarsRoverViewController: UIViewController {
 	
+	// MARK: IBOutlets
+	
 	@IBOutlet weak var image: UIImageView!
 	@IBOutlet weak var titleLabel: UILabel!
 	@IBOutlet weak var dateLabel: UILabel!
@@ -17,6 +19,8 @@ class MarsRoverViewController: UIViewController {
 	@IBOutlet weak var fullCameraNameLabel: UILabel!
 	@IBOutlet weak var solLabel: UILabel!
 	@IBOutlet weak var collectionView: UICollectionView!
+	
+	// MARK: Variables
 	
 	var marsPhotos: [Photo] = []
 	var currentPage = 1
@@ -69,6 +73,8 @@ class MarsRoverViewController: UIViewController {
 		}
     }
 	
+	
+	// MARK: Custom functions
 	
 	func loadUI(photo: Photo) {
 		image.getImage(imageUrl: photo.imgSrc)

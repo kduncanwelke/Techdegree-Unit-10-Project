@@ -21,6 +21,9 @@ class ViewController: UIViewController {
 	@IBOutlet weak var marsPhotoTitle: UILabel!
 	@IBOutlet weak var earthPhotoTitle: UILabel!
 	
+	
+	// MARK: Variables
+	
 	var currentDaily: Daily?
 	var currentRover: Mars?
 	var currentEarth: Earth?
@@ -29,6 +32,8 @@ class ViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		// Do any additional setup after loading the view, typically from a nib.
+		print(MarsSearch.marsSearch.rover)
+		print(MarsSearch.marsSearch.sol)
 		
 		locationManager.delegate = self
 		locationManager.desiredAccuracy = kCLLocationAccuracyBest
