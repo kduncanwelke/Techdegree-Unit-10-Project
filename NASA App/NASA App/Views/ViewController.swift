@@ -176,7 +176,6 @@ extension ViewController: CLLocationManagerDelegate {
 			EarthSearch.earthSearch.longitude = long
 			
 			earthPhotoTitle.text = "\(lat), \(long)"
-			print("\(lat) \(long)")
 		} else {
 			showAlert(title: "Geolocation failed", message: "Coordinates could not be found. Please check that location services are enabled.")
 		}

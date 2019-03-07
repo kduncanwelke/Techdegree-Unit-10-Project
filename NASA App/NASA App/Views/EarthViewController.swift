@@ -19,10 +19,12 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 	@IBOutlet weak var coordinatesLabel: UILabel!
 	@IBOutlet weak var dateLabel: UILabel!
 	@IBOutlet weak var mapView: MKMapView!
+	@IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 	
 	
 	// MARK: Variables
 	
+	var usingCurrentLocation = true
 	let locationManager = CLLocationManager()
 	var photo: UIImage?
 	var date: String?
@@ -49,6 +51,7 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 		
 		resultsTableController.tableView.delegate = resultsTableController
 		resultsTableController.mapView = mapView
+		resultsTableController.delegate = self
 		
 		searchController = UISearchController(searchResultsController: resultsTableController)
 		searchController.searchResultsUpdater = resultsTableController
@@ -57,6 +60,8 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 		searchController.searchBar.placeholder = "Type to search . . ."
 		searchController.delegate = self
 		searchController.searchBar.delegate = self // Monitor when the search button is tapped.
+		
+		image.addSubview(self.activityIndicator)
     }
 	
 	// set searchcontroller here, otherwise it won't load right
@@ -72,30 +77,35 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 // add location functionality
 extension EarthViewController: CLLocationManagerDelegate, MKMapViewDelegate {
 	func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-		if let lat = locations.last?.coordinate.latitude, let long = locations.last?.coordinate.longitude, let location = locations.last {
-			print("current location: \(lat) \(long)")
-			let regionRadius: CLLocationDistance = 1000
-			
-			let region = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: regionRadius, longitudinalMeters: regionRadius)
-			mapView.setRegion(region, animated: true)
-			
-			if let lastLocation = self.locationManager.location {
-				let geocoder = CLGeocoder()
+		// only show location on map if no location was chosen
+		if usingCurrentLocation {
+			if let lat = locations.last?.coordinate.latitude, let long = locations.last?.coordinate.longitude, let location = locations.last {
+				print("current location: \(lat) \(long)")
+				let regionRadius: CLLocationDistance = 1000
 				
-				// look up the location name
-				geocoder.reverseGeocodeLocation(lastLocation, completionHandler: { (placemarks, error) in
-					if error == nil {
-						guard let firstLocation = placemarks?[0] else { return }
-						self.locationLabel.text = LocationManager.parseAddress(selectedItem: firstLocation)
-					}
-					else {
-						// an error occurred during geocoding
-						print("error")
-					}
-				})
-			} else {
-				showAlert(title: "Geolocation failed", message: "Coordinates could not be found. Please check that location services are enabled.")
+				let region = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: regionRadius, longitudinalMeters: regionRadius)
+				mapView.setRegion(region, animated: true)
+				
+				if let lastLocation = self.locationManager.location {
+					let geocoder = CLGeocoder()
+					
+					// look up the location name
+					geocoder.reverseGeocodeLocation(lastLocation, completionHandler: { (placemarks, error) in
+						if error == nil {
+							guard let firstLocation = placemarks?[0] else { return }
+							self.locationLabel.text = LocationManager.parseAddress(selectedItem: firstLocation)
+						}
+						else {
+							// an error occurred during geocoding
+							print("error")
+						}
+					})
+				} else {
+					showAlert(title: "Geolocation failed", message: "Coordinates could not be found. Please check that location services are enabled.")
+				}
 			}
+		} else {
+			return
 		}
 	}
 	
@@ -131,5 +141,47 @@ extension EarthViewController: CLLocationManagerDelegate, MKMapViewDelegate {
 extension EarthViewController: UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate {
 	// function needed to satisfy compiler
 	func updateSearchResults(for searchController: UISearchController) {
+	}
+}
+
+extension EarthViewController: MapUpdaterDelegate {
+	func updateMapLocation(for location: MKPlacemark) {
+		usingCurrentLocation = false
+		
+		let coordinate = CLLocationCoordinate2D(latitude: EarthSearch.earthSearch.latitude, longitude: EarthSearch.earthSearch.longitude)
+		
+		let regionRadius: CLLocationDistance = 1000
+		
+		let region = MKCoordinateRegion(center: coordinate, latitudinalMeters: regionRadius, longitudinalMeters: regionRadius)
+		mapView.setRegion(region, animated: true)
+		
+		self.activityIndicator.startAnimating()
+		DataManager<Earth>.fetch(with: nil) { result in
+			switch result {
+			case .success(let response):
+				DispatchQueue.main.async {
+					guard let photo = response.first else {
+						self.showAlert(title: "Connection failed", message: "Json response failed, please try again later.")
+						return
+					}
+					self.image.getImage(imageUrl: photo.url)
+					self.dateLabel.text = "\(photo.date)"
+					self.locationLabel.text = LocationManager.parseAddress(selectedItem: location)
+					self.coordinatesLabel.text = "\(EarthSearch.earthSearch.latitude), \(EarthSearch.earthSearch.longitude)"
+					
+					self.activityIndicator.stopAnimating()
+				}
+			case .failure(let error):
+				DispatchQueue.main.async {
+					switch error {
+					case Errors.networkError:
+						self.showAlert(title: "Networking failed", message: "\(Errors.networkError.localizedDescription)")
+					default:
+						self.showAlert(title: "Networking failed", message: "\(error.localizedDescription)")
+					}
+				}
+			}
+		}
+
 	}
 }

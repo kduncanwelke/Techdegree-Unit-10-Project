@@ -15,6 +15,8 @@ class LocationSearchTableViewController: UITableViewController {
 	var resultsList: [MKMapItem] = [MKMapItem]()
 	var mapView: MKMapView? = nil
 	
+	var delegate: MapUpdaterDelegate?
+	
 	override func viewDidLoad() {
 		self.tableView.delegate = self
 		self.tableView.dataSource = self
@@ -45,6 +47,8 @@ class LocationSearchTableViewController: UITableViewController {
 		
 		EarthSearch.earthSearch.latitude = selectedLocation.coordinate.latitude
 		EarthSearch.earthSearch.longitude = selectedLocation.coordinate.longitude
+		
+		delegate?.updateMapLocation(for: selectedLocation)
 		
 		self.dismiss(animated: true, completion: nil)
 	}

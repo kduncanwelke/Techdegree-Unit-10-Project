@@ -421,6 +421,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="F8p-PP-QJP">
+                                <rect key="frame" x="197" y="203" width="20" height="20"/>
+                            </activityIndicatorView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="DtC-sU-ouM">
                                 <rect key="frame" x="0.0" y="88" width="414" height="250"/>
                                 <constraints>
@@ -463,11 +466,13 @@
                             <constraint firstItem="wXn-cF-VxN" firstAttribute="trailing" secondItem="P3D-e6-crW" secondAttribute="trailing" constant="20" id="4q9-Qj-4jz"/>
                             <constraint firstItem="DtC-sU-ouM" firstAttribute="top" secondItem="wXn-cF-VxN" secondAttribute="top" id="6SN-iP-Xfg"/>
                             <constraint firstItem="DtC-sU-ouM" firstAttribute="leading" secondItem="wXn-cF-VxN" secondAttribute="leading" id="A3R-qv-WoO"/>
+                            <constraint firstItem="F8p-PP-QJP" firstAttribute="centerY" secondItem="DtC-sU-ouM" secondAttribute="centerY" id="HmT-NX-jfO"/>
                             <constraint firstItem="P3D-e6-crW" firstAttribute="leading" secondItem="wXn-cF-VxN" secondAttribute="leading" constant="20" id="JvX-9W-1wN"/>
                             <constraint firstItem="wXn-cF-VxN" firstAttribute="trailing" secondItem="2cN-9Y-Q38" secondAttribute="trailing" constant="20" id="PoR-yZ-7Ja"/>
                             <constraint firstItem="iOJ-wm-El2" firstAttribute="top" secondItem="P3D-e6-crW" secondAttribute="bottom" constant="22" id="T7h-B7-3Ye"/>
                             <constraint firstItem="P3D-e6-crW" firstAttribute="top" secondItem="2cN-9Y-Q38" secondAttribute="bottom" id="V78-ji-HhQ"/>
                             <constraint firstItem="wXn-cF-VxN" firstAttribute="trailing" secondItem="iOJ-wm-El2" secondAttribute="trailing" id="WIh-Xv-edv"/>
+                            <constraint firstItem="F8p-PP-QJP" firstAttribute="centerX" secondItem="DtC-sU-ouM" secondAttribute="centerX" id="f1F-Bx-rMa"/>
                             <constraint firstItem="2cN-9Y-Q38" firstAttribute="leading" secondItem="wXn-cF-VxN" secondAttribute="leading" constant="20" id="tse-9A-S3s"/>
                             <constraint firstItem="DtC-sU-ouM" firstAttribute="trailing" secondItem="wXn-cF-VxN" secondAttribute="trailing" id="y8i-ic-0bk"/>
                             <constraint firstItem="iOJ-wm-El2" firstAttribute="leading" secondItem="wXn-cF-VxN" secondAttribute="leading" id="zwY-Ib-bGZ"/>
@@ -476,6 +481,7 @@
                     </view>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" prompted="NO"/>
                     <connections>
+                        <outlet property="activityIndicator" destination="F8p-PP-QJP" id="Xh4-gb-z1x"/>
                         <outlet property="coordinatesLabel" destination="AQr-84-8iX" id="2SJ-ao-Pu4"/>
                         <outlet property="dateLabel" destination="JUR-vv-Igo" id="fWI-Hx-lwc"/>
                         <outlet property="image" destination="DtC-sU-ouM" id="XyI-Jb-Qsl"/>
