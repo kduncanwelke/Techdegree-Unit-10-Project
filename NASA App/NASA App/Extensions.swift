@@ -18,29 +18,3 @@ extension UIViewController {
 	}
 }
 
-extension UIImageView {
-	func getImage(imageUrl: String) {
-		var chosenUrl = ""
-		
-		if imageUrl.hasPrefix("https") {
-			chosenUrl = imageUrl
-		} else {
-			let http = imageUrl
-			let https = "https" + http.dropFirst(4)
-			chosenUrl = https
-		}
-		
-		guard let url = URL(string: chosenUrl) else { return }
-		
-		URLSession.shared.dataTask(with: url) { (data, response, error) -> Void in
-			if let error = error {
-				print(error)
-				return
-			}
-			DispatchQueue.main.async(execute: { () -> Void in
-				let image = UIImage(data: data!)
-				self.image = image
-			})
-		} .resume()
-	}
-}

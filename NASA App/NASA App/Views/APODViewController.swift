@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Nuke
 
 class APODViewController: UIViewController {
 	
@@ -60,7 +61,9 @@ class APODViewController: UIViewController {
 	// MARK: Custom functions
 	
 	func updateUI(for photo: Daily) {
-		image.getImage(imageUrl: photo.url)
+		let url = UrlHandling.getURL(imageUrl: photo.url)
+		guard let urlToLoad = url else { return }
+		Nuke.loadImage(with: urlToLoad, into: image)
 		titleLabel.text = photo.title
 		dateLabel.text = photo.date
 		explanationLabel.text = photo.explanation

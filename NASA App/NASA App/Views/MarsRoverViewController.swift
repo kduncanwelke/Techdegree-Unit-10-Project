@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Nuke
 
 class MarsRoverViewController: UIViewController {
 	
@@ -77,7 +78,9 @@ class MarsRoverViewController: UIViewController {
 	// MARK: Custom functions
 	
 	func loadUI(photo: Photo) {
-		image.getImage(imageUrl: photo.imgSrc)
+		let url = UrlHandling.getURL(imageUrl: photo.imgSrc)
+		guard let urlToLoad = url else { return }
+		Nuke.loadImage(with: urlToLoad, into: image)
 		titleLabel.text = photo.rover.name
 		dateLabel.text = photo.earthDate
 		solLabel.text = "\(photo.sol)"
@@ -134,7 +137,10 @@ extension MarsRoverViewController: UICollectionViewDataSource {
 	
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "marsCell", for: indexPath) as! MarsCollectionViewCell
-		cell.image.getImage(imageUrl: marsPhotos[indexPath.row].imgSrc)
+		let url = UrlHandling.getURL(imageUrl: marsPhotos[indexPath.row].imgSrc)
+		if let urlToLoad = url {
+			Nuke.loadImage(with: urlToLoad, into: cell.image)
+		}
 		return cell
 	}
 	

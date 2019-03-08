@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreLocation
+import Nuke
 
 class ViewController: UIViewController {
 	
@@ -49,8 +50,12 @@ class ViewController: UIViewController {
 						self.showAlert(title: "Connection failed", message: "Json response failed, please try again later.")
 						return
 					}
+					
 					self.currentDaily = photo
-					self.dailyPhoto.getImage(imageUrl: photo.url)
+					let url = UrlHandling.getURL(imageUrl: photo.url)
+					guard let urlToLoad = url else { return }
+					Nuke.loadImage(with: urlToLoad, into: self.dailyPhoto)
+				
 					self.dailyPhotoTitle.text = photo.title
 					self.dailyPhotoTitle.adjustsFontSizeToFitWidth = true
 				}
@@ -76,7 +81,10 @@ class ViewController: UIViewController {
 						return
 					}
 					self.currentRover = response.first
-					self.roverPhoto.getImage(imageUrl: image)
+					let url =  UrlHandling.getURL(imageUrl: image)
+					guard let urlToLoad = url else { return }
+					Nuke.loadImage(with: urlToLoad, into: self.roverPhoto)
+					
 					guard let title = response.first?.photos.first else { return }
 					self.marsPhotoTitle.text = "\(title.rover.name), \(title.earthDate)"
 				}
@@ -102,7 +110,10 @@ class ViewController: UIViewController {
 						return
 					}
 					self.currentEarth = photo
-					self.earthPhoto.getImage(imageUrl: photo.url)
+					let url =  UrlHandling.getURL(imageUrl: photo.url)
+					guard let urlToLoad = url else { return }
+					Nuke.loadImage(with: urlToLoad, into: self.earthPhoto)
+					
 					self.earthPhotoTitle.text = "\(EarthSearch.earthSearch.latitude), \(EarthSearch.earthSearch.longitude)"
 				}
 			case .failure(let error):
@@ -176,6 +187,7 @@ extension ViewController: CLLocationManagerDelegate {
 			EarthSearch.earthSearch.longitude = long
 			
 			earthPhotoTitle.text = "\(lat), \(long)"
+
 		} else {
 			showAlert(title: "Geolocation failed", message: "Coordinates could not be found. Please check that location services are enabled.")
 		}

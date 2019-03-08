@@ -9,12 +9,13 @@
 import UIKit
 import CoreLocation
 import MapKit
+import Nuke
 
 class EarthViewController: UIViewController, UITableViewDelegate {
 	
 	// MARK: IBOutlets
 	
-	@IBOutlet weak var image: UIImageView!
+	@IBOutlet weak var image: UIImageView! 
 	@IBOutlet weak var locationLabel: UILabel!
 	@IBOutlet weak var coordinatesLabel: UILabel!
 	@IBOutlet weak var dateLabel: UILabel!
@@ -29,6 +30,15 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 	var photo: UIImage?
 	var date: String?
 	var searchController = UISearchController(searchResultsController: nil)
+	
+	var isDoneLoading = false {
+		didSet {
+			if isDoneLoading == true {
+				self.activityIndicator.stopAnimating()
+				print("didset activated")
+			}
+		}
+	}
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -164,12 +174,13 @@ extension EarthViewController: MapUpdaterDelegate {
 						self.showAlert(title: "Connection failed", message: "Json response failed, please try again later.")
 						return
 					}
-					self.image.getImage(imageUrl: photo.url)
+					let url = UrlHandling.getURL(imageUrl: photo.url)
+					guard let urlToLoad = url else { return }
+					Nuke.loadImage(with: urlToLoad, into: self.image)
+					self.activityIndicator.stopAnimating()
 					self.dateLabel.text = "\(photo.date)"
 					self.locationLabel.text = LocationManager.parseAddress(selectedItem: location)
 					self.coordinatesLabel.text = "\(EarthSearch.earthSearch.latitude), \(EarthSearch.earthSearch.longitude)"
-					
-					self.activityIndicator.stopAnimating()
 				}
 			case .failure(let error):
 				DispatchQueue.main.async {
@@ -182,6 +193,5 @@ extension EarthViewController: MapUpdaterDelegate {
 				}
 			}
 		}
-
 	}
 }
