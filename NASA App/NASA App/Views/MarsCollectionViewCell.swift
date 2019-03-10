@@ -11,5 +11,6 @@ import UIKit
 class MarsCollectionViewCell: UICollectionViewCell {
 	
 	@IBOutlet weak var image: UIImageView!
+	@IBOutlet weak var cellActivityIndicator: UIActivityIndicatorView!
 	
 }

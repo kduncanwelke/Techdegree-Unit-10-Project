@@ -11,6 +11,7 @@ import Foundation
 struct MarsSearch {
 	var sol: Int
 	var rover: Rover
+	var earthDate: String?
 	
 	static var solDate = Int.random(in: 0...2200)
 	
@@ -28,7 +29,7 @@ struct MarsSearch {
 	}()
 	
 	
-	static var marsSearch = MarsSearch(sol: solDate, rover: chosenRover)
+	static var marsSearch = MarsSearch(sol: solDate, rover: chosenRover, earthDate: nil)
 	
 	enum Rover: String {
 		case curiosity = "curiosity"

@@ -176,8 +176,10 @@ extension EarthViewController: MapUpdaterDelegate {
 					}
 					let url = UrlHandling.getURL(imageUrl: photo.url)
 					guard let urlToLoad = url else { return }
-					Nuke.loadImage(with: urlToLoad, into: self.image)
-					self.activityIndicator.stopAnimating()
+					Nuke.loadImage(with: urlToLoad, into: self.image) { response, _ in
+						self.image?.image = response?.image
+						self.activityIndicator.stopAnimating()
+					}
 					self.dateLabel.text = "\(photo.date)"
 					self.locationLabel.text = LocationManager.parseAddress(selectedItem: location)
 					self.coordinatesLabel.text = "\(EarthSearch.earthSearch.latitude), \(EarthSearch.earthSearch.longitude)"

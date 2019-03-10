@@ -63,7 +63,10 @@ class APODViewController: UIViewController {
 	func updateUI(for photo: Daily) {
 		let url = UrlHandling.getURL(imageUrl: photo.url)
 		guard let urlToLoad = url else { return }
-		Nuke.loadImage(with: urlToLoad, into: image)
+		Nuke.loadImage(with: urlToLoad, into: image) { response, _ in
+			self.image?.image = response?.image
+			self.activityIndicator.stopAnimating()
+		}
 		titleLabel.text = photo.title
 		dateLabel.text = photo.date
 		explanationLabel.text = photo.explanation
@@ -83,8 +86,6 @@ class APODViewController: UIViewController {
 					
 					guard let currentPhoto = self.dailyPhoto else { return }
 					self.updateUI(for: currentPhoto)
-					
-					self.activityIndicator.stopAnimating()
 				}
 			case .failure(let error):
 				DispatchQueue.main.async {

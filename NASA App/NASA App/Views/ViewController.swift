@@ -22,6 +22,10 @@ class ViewController: UIViewController {
 	@IBOutlet weak var marsPhotoTitle: UILabel!
 	@IBOutlet weak var earthPhotoTitle: UILabel!
 	
+	@IBOutlet weak var dailyPhotoActivityIndicator: UIActivityIndicatorView!
+	@IBOutlet weak var roverPhotoActivityIndicator: UIActivityIndicatorView!
+	@IBOutlet weak var earthPhotoActivityIndicator: UIActivityIndicatorView!
+	
 	
 	// MARK: Variables
 	
@@ -29,6 +33,7 @@ class ViewController: UIViewController {
 	var currentRover: Mars?
 	var currentEarth: Earth?
 	let locationManager = CLLocationManager()
+	
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -41,10 +46,11 @@ class ViewController: UIViewController {
 		locationManager.requestLocation()
 		locationManager.startUpdatingLocation()
 		
+		
+		dailyPhotoActivityIndicator.startAnimating()
 		DataManager<Daily>.fetch(with: nil) { result in
 			switch result {
 			case .success(let response):
-				//print(response)
 				DispatchQueue.main.async {
 					guard let photo = response.first else {
 						self.showAlert(title: "Connection failed", message: "Json response failed, please try again later.")
@@ -54,7 +60,10 @@ class ViewController: UIViewController {
 					self.currentDaily = photo
 					let url = UrlHandling.getURL(imageUrl: photo.url)
 					guard let urlToLoad = url else { return }
-					Nuke.loadImage(with: urlToLoad, into: self.dailyPhoto)
+					Nuke.loadImage(with: urlToLoad, into: self.dailyPhoto) { response, _ in
+						self.dailyPhoto?.image = response?.image
+						self.dailyPhotoActivityIndicator.stopAnimating()
+					}
 				
 					self.dailyPhotoTitle.text = photo.title
 					self.dailyPhotoTitle.adjustsFontSizeToFitWidth = true
@@ -63,27 +72,32 @@ class ViewController: UIViewController {
 				DispatchQueue.main.async {
 					switch error {
 					case Errors.networkError:
+						self.dailyPhotoActivityIndicator.stopAnimating()
 						self.showAlert(title: "Networking failed", message: "\(Errors.networkError.localizedDescription)")
 					default:
+						self.dailyPhotoActivityIndicator.stopAnimating()
 						self.showAlert(title: "Networking failed", message: "\(error.localizedDescription)")
 					}
 				}
 			}
 		}
 		
+		roverPhotoActivityIndicator.startAnimating()
 		DataManager<Mars>.fetch(with: nil) { result in
 			switch result {
 			case .success(let response):
-				//print(response)
 				DispatchQueue.main.async {
 					guard let image = response.first?.photos.first?.imgSrc else {
 						self.showAlert(title: "Connection failed", message: "Json response failed, please try again later.")
 						return
 					}
 					self.currentRover = response.first
-					let url =  UrlHandling.getURL(imageUrl: image)
+					let url =  UrlHandling.getURL(imageUrl: image) 
 					guard let urlToLoad = url else { return }
-					Nuke.loadImage(with: urlToLoad, into: self.roverPhoto)
+					Nuke.loadImage(with: urlToLoad, into: self.roverPhoto) { response, _ in
+						self.roverPhoto?.image = response?.image
+						self.roverPhotoActivityIndicator.stopAnimating()
+					}
 					
 					guard let title = response.first?.photos.first else { return }
 					self.marsPhotoTitle.text = "\(title.rover.name), \(title.earthDate)"
@@ -92,18 +106,20 @@ class ViewController: UIViewController {
 				DispatchQueue.main.async {
 					switch error {
 					case Errors.networkError:
+						self.roverPhotoActivityIndicator.stopAnimating()
 						self.showAlert(title: "Networking failed", message: "\(Errors.networkError.localizedDescription)")
 					default:
+						self.roverPhotoActivityIndicator.stopAnimating()
 						self.showAlert(title: "Networking failed", message: "\(error.localizedDescription)")
 					}
 				}
 			}
 		}
 		
+		earthPhotoActivityIndicator.startAnimating()
 		DataManager<Earth>.fetch(with: nil) { result in
 			switch result {
 			case .success(let response):
-				//print(response)
 				DispatchQueue.main.async {
 					guard let photo = response.first else {
 						self.showAlert(title: "Connection failed", message: "Json response failed, please try again later.")
@@ -112,7 +128,10 @@ class ViewController: UIViewController {
 					self.currentEarth = photo
 					let url =  UrlHandling.getURL(imageUrl: photo.url)
 					guard let urlToLoad = url else { return }
-					Nuke.loadImage(with: urlToLoad, into: self.earthPhoto)
+					Nuke.loadImage(with: urlToLoad, into: self.earthPhoto) { response, _ in
+						self.earthPhoto?.image = response?.image
+						self.earthPhotoActivityIndicator.stopAnimating()
+					}
 					
 					self.earthPhotoTitle.text = "\(EarthSearch.earthSearch.latitude), \(EarthSearch.earthSearch.longitude)"
 				}
@@ -120,8 +139,10 @@ class ViewController: UIViewController {
 				DispatchQueue.main.async {
 					switch error {
 					case Errors.networkError:
+						self.earthPhotoActivityIndicator.stopAnimating()
 						self.showAlert(title: "Networking failed", message: "\(Errors.networkError.localizedDescription)")
 					default:
+						self.earthPhotoActivityIndicator.stopAnimating()
 						self.showAlert(title: "Networking failed", message: "\(error.localizedDescription)")
 					}
 				}

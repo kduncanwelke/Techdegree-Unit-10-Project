@@ -35,6 +35,7 @@
 		2DA89E05222479D3004266EB /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA89E04222479D3004266EB /* Errors.swift */; };
 		2DA89E0922247E22004266EB /* SearchType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA89E0822247E22004266EB /* SearchType.swift */; };
 		2DA89E0B222480B3004266EB /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA89E0A222480B3004266EB /* DataManager.swift */; };
+		2DB076982234685C0076CFEB /* RefineSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB076972234685C0076CFEB /* RefineSearchViewController.swift */; };
 		2DD62B64223327E50026B521 /* Nuke.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DD62B63223327E50026B521 /* Nuke.framework */; };
 /* End PBXBuildFile section */
 
@@ -81,6 +82,7 @@
 		2DA89E04222479D3004266EB /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		2DA89E0822247E22004266EB /* SearchType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchType.swift; sourceTree = "<group>"; };
 		2DA89E0A222480B3004266EB /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
+		2DB076972234685C0076CFEB /* RefineSearchViewController.swift */ = {isa = PBXFileReference; indentWidth = 5; lastKnownFileType = sourcecode.swift; path = RefineSearchViewController.swift; sourceTree = "<group>"; };
 		2DD62B63223327E50026B521 /* Nuke.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nuke.framework; path = Carthage/Build/iOS/Nuke.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -183,6 +185,7 @@
 				2D2F059D2221F87B00F3627F /* ViewController.swift */,
 				2D91C2102228A277004BC072 /* APODViewController.swift */,
 				2D91C2122228A289004BC072 /* MarsRoverViewController.swift */,
+				2DB076972234685C0076CFEB /* RefineSearchViewController.swift */,
 				2D59BF7B222B4B3F0073A295 /* MarsCollectionViewCell.swift */,
 				2D91C2142228A293004BC072 /* EarthViewController.swift */,
 				2D9E0AB02230843300FF8BCB /* LocationSearchTableViewController.swift */,
@@ -344,6 +347,7 @@
 				2D2F05C3222208B200F3627F /* Endpoint.swift in Sources */,
 				2D9E0AAF22307F5900FF8BCB /* LocationManager.swift in Sources */,
 				2D2F05CA2222186F00F3627F /* DailyPhotoSearch.swift in Sources */,
+				2DB076982234685C0076CFEB /* RefineSearchViewController.swift in Sources */,
 				2D2F05BD222207E000F3627F /* Networker.swift in Sources */,
 				2D2F05C62222157C00F3627F /* EarthSearch.swift in Sources */,
 			);

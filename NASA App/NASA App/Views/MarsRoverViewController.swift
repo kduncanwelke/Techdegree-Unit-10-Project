@@ -20,6 +20,9 @@ class MarsRoverViewController: UIViewController {
 	@IBOutlet weak var fullCameraNameLabel: UILabel!
 	@IBOutlet weak var solLabel: UILabel!
 	@IBOutlet weak var collectionView: UICollectionView!
+	@IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+	@IBOutlet weak var refineSearchButton: UIButton!
+	
 	
 	// MARK: Variables
 	
@@ -35,6 +38,7 @@ class MarsRoverViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+		currentPage = 1
 		
 		collectionView.delegate = self
 		collectionView.dataSource = self
@@ -48,14 +52,26 @@ class MarsRoverViewController: UIViewController {
 		cameraLabel.text = cameraName
 		fullCameraNameLabel.text = fullCameraName
 		
+		refineSearchButton.layer.cornerRadius = 10
+		
+		loadData()
+    }
+	
+	
+	// MARK: Custom functions
+	
+	func loadData() {
 		DataManager<Mars>.fetch(with: currentPage) { result in
 			switch result {
 			case .success(let response):
 				DispatchQueue.main.async {
-					guard let response = response.first?.photos else {
+					guard let response = response.first?.photos, let first = response.first else {
 						self.showAlert(title: "Connection failed", message: "Json response failed, please try again later.")
+						print("no data found")
 						return
 					}
+					
+					self.loadUI(photo: first)
 					for photo in response {
 						self.marsPhotos.append(photo)
 					}
@@ -72,15 +88,16 @@ class MarsRoverViewController: UIViewController {
 				}
 			}
 		}
-    }
-	
-	
-	// MARK: Custom functions
+	}
 	
 	func loadUI(photo: Photo) {
+		activityIndicator.startAnimating()
 		let url = UrlHandling.getURL(imageUrl: photo.imgSrc)
 		guard let urlToLoad = url else { return }
-		Nuke.loadImage(with: urlToLoad, into: image)
+		Nuke.loadImage(with: urlToLoad, into: image) { response, _ in
+			self.image?.image = response?.image
+			self.activityIndicator.stopAnimating()
+		}
 		titleLabel.text = photo.rover.name
 		dateLabel.text = photo.earthDate
 		solLabel.text = "\(photo.sol)"
@@ -127,7 +144,19 @@ class MarsRoverViewController: UIViewController {
         // Pass the selected object to the new view controller.
     }
     */
-
+	
+	@IBAction func unwindToRover(segue: UIStoryboardSegue) {
+		marsPhotos.removeAll()
+		viewDidLoad()
+		print("called from unwind")
+	}
+	
+	// MARK: IBActions
+	
+	@IBAction func refineSearchButtonPressed(_ sender: Any) {
+		performSegue(withIdentifier: "refineSearch", sender: Any?.self)
+	}
+	
 }
 
 extension MarsRoverViewController: UICollectionViewDataSource {
@@ -138,8 +167,13 @@ extension MarsRoverViewController: UICollectionViewDataSource {
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "marsCell", for: indexPath) as! MarsCollectionViewCell
 		let url = UrlHandling.getURL(imageUrl: marsPhotos[indexPath.row].imgSrc)
+		
+		cell.cellActivityIndicator.startAnimating()
 		if let urlToLoad = url {
-			Nuke.loadImage(with: urlToLoad, into: cell.image)
+			Nuke.loadImage(with: urlToLoad, into: cell.image) { response, _ in
+				self.image?.image = response?.image
+				cell.cellActivityIndicator.stopAnimating()
+			}
 		}
 		return cell
 	}

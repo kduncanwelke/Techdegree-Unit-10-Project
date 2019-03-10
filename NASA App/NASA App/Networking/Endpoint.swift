@@ -35,8 +35,16 @@ enum Endpoint {
 			let sol = MarsSearch.marsSearch.sol
 			let rover = MarsSearch.marsSearch.rover.rawValue
 			
+			// if earth date hasn't been set, search is based on mars sol
+			guard let earthDate = MarsSearch.marsSearch.earthDate else {
+				var components = URLComponents(url: baseURL.appendingPathComponent("mars-photos/api/v1/rovers/\(rover)/photos"), resolvingAgainstBaseURL: false)
+				components!.queryItems = [URLQueryItem(name: "sol", value: "\(sol)"), URLQueryItem(name: "page", value: "\(page ?? 1)"), URLQueryItem(name: "api_key", value: "\(key)")]
+				return components!.url!
+			}
+			
+			// if earth date has been set, use it instead of mars sol
 			var components = URLComponents(url: baseURL.appendingPathComponent("mars-photos/api/v1/rovers/\(rover)/photos"), resolvingAgainstBaseURL: false)
-			components!.queryItems = [URLQueryItem(name: "sol", value: "\(sol)"), URLQueryItem(name: "page", value: "\(page ?? 1)"), URLQueryItem(name: "api_key", value: "\(key)")]
+			components!.queryItems = [URLQueryItem(name: "earth_date", value: "\(earthDate)"), URLQueryItem(name: "page", value: "\(page ?? 1)"), URLQueryItem(name: "api_key", value: "\(key)")]
 			return components!.url!
 		case .dailyPhoto:
 			let date = DailyPhotoSearch.photoSearch.date
