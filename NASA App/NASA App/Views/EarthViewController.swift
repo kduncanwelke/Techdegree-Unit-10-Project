@@ -80,7 +80,72 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 		navigationItem.hidesSearchBarWhenScrolling = false
 		definesPresentationContext = true
 	}
-    
+	
+	
+	// MARK: Custom functions
+	
+	func updateLocation(location: MKPlacemark) {
+		usingCurrentLocation = false
+		mapView.removeAnnotations(mapView.annotations)
+		
+		let coordinate = CLLocationCoordinate2D(latitude: EarthSearch.earthSearch.latitude, longitude: EarthSearch.earthSearch.longitude)
+		
+		let regionRadius: CLLocationDistance = 1000
+		
+		let region = MKCoordinateRegion(center: coordinate, latitudinalMeters: regionRadius, longitudinalMeters: regionRadius)
+		
+		let annotation = MKPointAnnotation()
+		annotation.coordinate = coordinate
+		annotation.title = location.title
+		mapView.addAnnotation(annotation)
+		
+		mapView.setRegion(region, animated: true)
+		
+		self.activityIndicator.startAnimating()
+		DataManager<Earth>.fetch(with: nil) { result in
+			switch result {
+			case .success(let response):
+				DispatchQueue.main.async {
+					guard let photo = response.first else {
+						self.showAlert(title: "Connection failed", message: "Json response failed, please try again later.")
+						return
+					}
+					let url = UrlHandling.getURL(imageUrl: photo.url)
+					guard let urlToLoad = url else { return }
+					Nuke.loadImage(with: urlToLoad, into: self.image) { response, _ in
+						self.image?.image = response?.image
+						self.activityIndicator.stopAnimating()
+					}
+					self.dateLabel.text = "\(photo.date)"
+					self.locationLabel.text = LocationManager.parseAddress(selectedItem: location)
+					self.coordinatesLabel.text = "\(EarthSearch.earthSearch.latitude), \(EarthSearch.earthSearch.longitude)"
+				}
+			case .failure(let error):
+				DispatchQueue.main.async {
+					switch error {
+					case Errors.networkError:
+						self.showAlert(title: "Networking failed", message: "\(Errors.networkError.localizedDescription)")
+					default:
+						self.showAlert(title: "Networking failed", message: "\(error.localizedDescription)")
+					}
+				}
+			}
+		}
+	}
+
+	// MARK: IBActions
+	
+	@IBAction func mapTapped(_ sender: UITapGestureRecognizer) {
+		if sender.state == .ended {
+			let tappedLocation = sender.location(in: mapView)
+			let coordinate = mapView.convert(tappedLocation, toCoordinateFrom: mapView)
+			let placemark = MKPlacemark(coordinate: coordinate)
+			EarthSearch.earthSearch.latitude = placemark.coordinate.latitude
+			EarthSearch.earthSearch.longitude = placemark.coordinate.longitude
+			updateLocation(location: placemark)
+		}
+	}
+	
 }
 
 
@@ -156,44 +221,6 @@ extension EarthViewController: UISearchControllerDelegate, UISearchResultsUpdati
 
 extension EarthViewController: MapUpdaterDelegate {
 	func updateMapLocation(for location: MKPlacemark) {
-		usingCurrentLocation = false
-		
-		let coordinate = CLLocationCoordinate2D(latitude: EarthSearch.earthSearch.latitude, longitude: EarthSearch.earthSearch.longitude)
-		
-		let regionRadius: CLLocationDistance = 1000
-		
-		let region = MKCoordinateRegion(center: coordinate, latitudinalMeters: regionRadius, longitudinalMeters: regionRadius)
-		mapView.setRegion(region, animated: true)
-		
-		self.activityIndicator.startAnimating()
-		DataManager<Earth>.fetch(with: nil) { result in
-			switch result {
-			case .success(let response):
-				DispatchQueue.main.async {
-					guard let photo = response.first else {
-						self.showAlert(title: "Connection failed", message: "Json response failed, please try again later.")
-						return
-					}
-					let url = UrlHandling.getURL(imageUrl: photo.url)
-					guard let urlToLoad = url else { return }
-					Nuke.loadImage(with: urlToLoad, into: self.image) { response, _ in
-						self.image?.image = response?.image
-						self.activityIndicator.stopAnimating()
-					}
-					self.dateLabel.text = "\(photo.date)"
-					self.locationLabel.text = LocationManager.parseAddress(selectedItem: location)
-					self.coordinatesLabel.text = "\(EarthSearch.earthSearch.latitude), \(EarthSearch.earthSearch.longitude)"
-				}
-			case .failure(let error):
-				DispatchQueue.main.async {
-					switch error {
-					case Errors.networkError:
-						self.showAlert(title: "Networking failed", message: "\(Errors.networkError.localizedDescription)")
-					default:
-						self.showAlert(title: "Networking failed", message: "\(error.localizedDescription)")
-					}
-				}
-			}
-		}
+		updateLocation(location: location)
 	}
 }

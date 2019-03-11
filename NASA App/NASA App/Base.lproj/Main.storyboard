@@ -585,9 +585,13 @@
                             </stackView>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iOJ-wm-El2">
                                 <rect key="frame" x="0.0" y="424" width="414" height="200"/>
+                                <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="200" id="dX3-ew-gyi"/>
                                 </constraints>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="hP0-0k-3wl" appends="YES" id="DAa-dx-6SK"/>
+                                </connections>
                             </mapView>
                         </subviews>
                         <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -620,6 +624,11 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="g18-8r-OFO" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="hP0-0k-3wl">
+                    <connections>
+                        <action selector="mapTapped:" destination="ppk-Pd-aJS" id="BOL-9z-ywq"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="3313.04347826087" y="79.6875"/>
         </scene>

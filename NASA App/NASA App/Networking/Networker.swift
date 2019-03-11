@@ -34,6 +34,7 @@ struct Networker {
 				}
 			} else {
 				completion(.failure(Errors.networkError))
+				print("status was not 200")
 			}
 		}
 		task.resume()
