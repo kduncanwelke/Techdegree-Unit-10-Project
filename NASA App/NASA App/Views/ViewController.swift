@@ -9,6 +9,7 @@
 import UIKit
 import CoreLocation
 import Nuke
+import WebKit
 
 class ViewController: UIViewController {
 	
@@ -22,6 +23,10 @@ class ViewController: UIViewController {
 	@IBOutlet weak var marsPhotoTitle: UILabel!
 	@IBOutlet weak var earthPhotoTitle: UILabel!
 	
+	@IBOutlet weak var containerView: UIView!
+	@IBOutlet weak var webview: WKWebView!
+	
+	
 	@IBOutlet weak var dailyPhotoActivityIndicator: UIActivityIndicatorView!
 	@IBOutlet weak var roverPhotoActivityIndicator: UIActivityIndicatorView!
 	@IBOutlet weak var earthPhotoActivityIndicator: UIActivityIndicatorView!
@@ -33,6 +38,9 @@ class ViewController: UIViewController {
 	var currentRover: Mars?
 	var currentEarth: Earth?
 	let locationManager = CLLocationManager()
+	
+	var isVideo = false
+	var videoURL: URLRequest?
 	
 	
 	override func viewDidLoad() {
@@ -58,11 +66,25 @@ class ViewController: UIViewController {
 					}
 					
 					self.currentDaily = photo
-					let url = UrlHandling.getURL(imageUrl: photo.url)
-					guard let urlToLoad = url else { return }
-					Nuke.loadImage(with: urlToLoad, into: self.dailyPhoto) { response, _ in
-						self.dailyPhoto?.image = response?.image
+					
+					if photo.mediaType == "video" {
+						self.isVideo = true
+						guard let url = URL(string: photo.url) else { return }
+						let request = URLRequest(url: url)
+						self.videoURL = request
+						self.webview?.load(request)
+						self.dailyPhoto.isHidden = true
 						self.dailyPhotoActivityIndicator.stopAnimating()
+					} else {
+						self.isVideo = false
+						self.webview.isHidden = true
+						self.currentDaily = photo
+						let url = UrlHandling.getURL(imageUrl: photo.url)
+						guard let urlToLoad = url else { return }
+						Nuke.loadImage(with: urlToLoad, into: self.dailyPhoto) { response, _ in
+							self.dailyPhoto?.image = response?.image
+							self.dailyPhotoActivityIndicator.stopAnimating()
+						}
 					}
 				
 					self.dailyPhotoTitle.text = photo.title
@@ -83,38 +105,7 @@ class ViewController: UIViewController {
 		}
 		
 		roverPhotoActivityIndicator.startAnimating()
-		DataManager<Mars>.fetch(with: nil) { result in
-			switch result {
-			case .success(let response):
-				DispatchQueue.main.async {
-					guard let image = response.first?.photos.first?.imgSrc else {
-						self.showAlert(title: "Connection failed", message: "Json response failed, please try again later.")
-						return
-					}
-					self.currentRover = response.first
-					let url =  UrlHandling.getURL(imageUrl: image) 
-					guard let urlToLoad = url else { return }
-					Nuke.loadImage(with: urlToLoad, into: self.roverPhoto) { response, _ in
-						self.roverPhoto?.image = response?.image
-						self.roverPhotoActivityIndicator.stopAnimating()
-					}
-					
-					guard let title = response.first?.photos.first else { return }
-					self.marsPhotoTitle.text = "\(title.rover.name), \(title.earthDate)"
-				}
-			case .failure(let error):
-				DispatchQueue.main.async {
-					switch error {
-					case Errors.networkError:
-						self.roverPhotoActivityIndicator.stopAnimating()
-						self.showAlert(title: "Networking failed", message: "\(Errors.networkError.localizedDescription)")
-					default:
-						self.roverPhotoActivityIndicator.stopAnimating()
-						self.showAlert(title: "Networking failed", message: "\(error.localizedDescription)")
-					}
-				}
-			}
-		}
+		getRandomMarsPhoto()
 		
 		earthPhotoActivityIndicator.startAnimating()
 		DataManager<Earth>.fetch(with: nil) { result in
@@ -159,12 +150,58 @@ class ViewController: UIViewController {
 		self.navigationController?.setNavigationBarHidden(false, animated: false)
 	}
 	
+	// MARK: Custom functions
+	
+	func getRandomMarsPhoto() {
+		DataManager<Mars>.fetch(with: nil) { result in
+			switch result {
+			case .success(let response):
+				DispatchQueue.main.async {
+					guard let image = response.first?.photos.first?.imgSrc else {
+						//self.showAlert(title: "Connection failed", message: "Json response failed, please try again later.")
+						
+						MarsSearch.marsSearch.sol = Int.random(in: 0...2200)
+						print("re-randomized results")
+						self.getRandomMarsPhoto()
+						return
+					}
+					self.currentRover = response.first
+					let url =  UrlHandling.getURL(imageUrl: image)
+					guard let urlToLoad = url else { return }
+					Nuke.loadImage(with: urlToLoad, into: self.roverPhoto) { response, _ in
+						self.roverPhoto?.image = response?.image
+						self.roverPhotoActivityIndicator.stopAnimating()
+					}
+					
+					guard let title = response.first?.photos.first else { return }
+					self.marsPhotoTitle.text = "\(title.rover.name), \(title.earthDate)"
+				}
+			case .failure(let error):
+				DispatchQueue.main.async {
+					switch error {
+					case Errors.networkError:
+						self.roverPhotoActivityIndicator.stopAnimating()
+						self.showAlert(title: "Networking failed", message: "\(Errors.networkError.localizedDescription)")
+					default:
+						self.roverPhotoActivityIndicator.stopAnimating()
+						self.showAlert(title: "Networking failed", message: "\(error.localizedDescription)")
+					}
+				}
+			}
+		}
+	}
+	
+	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		if segue.destination is APODViewController {
 			let destinationViewController = segue.destination as? APODViewController
 			guard let current = currentDaily else { return }
 			destinationViewController?.dailyPhoto = current
 			destinationViewController?.photo = dailyPhoto.image
+			destinationViewController?.isVideo = isVideo
+			if isVideo {
+				destinationViewController?.videoURL = videoURL
+			}
 		} else if segue.destination is MarsRoverViewController {
 			let destinationViewController = segue.destination as? MarsRoverViewController
 			guard let current = currentRover else { return }

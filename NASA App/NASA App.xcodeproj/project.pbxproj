@@ -26,6 +26,7 @@
 		2D91C2112228A277004BC072 /* APODViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D91C2102228A277004BC072 /* APODViewController.swift */; };
 		2D91C2132228A289004BC072 /* MarsRoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D91C2122228A289004BC072 /* MarsRoverViewController.swift */; };
 		2D91C2152228A293004BC072 /* EarthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D91C2142228A293004BC072 /* EarthViewController.swift */; };
+		2D91C65B22371CDA0087B97D /* PostcardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D91C65A22371CDA0087B97D /* PostcardViewController.swift */; };
 		2D9D650422273D2D0017E9C6 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D9D650322273D2D0017E9C6 /* Extensions.swift */; };
 		2D9E0AAF22307F5900FF8BCB /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D9E0AAE22307F5900FF8BCB /* LocationManager.swift */; };
 		2D9E0AB12230843300FF8BCB /* LocationSearchTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D9E0AB02230843300FF8BCB /* LocationSearchTableViewController.swift */; };
@@ -73,6 +74,7 @@
 		2D91C2102228A277004BC072 /* APODViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APODViewController.swift; sourceTree = "<group>"; };
 		2D91C2122228A289004BC072 /* MarsRoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarsRoverViewController.swift; sourceTree = "<group>"; };
 		2D91C2142228A293004BC072 /* EarthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthViewController.swift; sourceTree = "<group>"; };
+		2D91C65A22371CDA0087B97D /* PostcardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostcardViewController.swift; sourceTree = "<group>"; };
 		2D9D650322273D2D0017E9C6 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		2D9E0AAE22307F5900FF8BCB /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		2D9E0AB02230843300FF8BCB /* LocationSearchTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSearchTableViewController.swift; sourceTree = "<group>"; };
@@ -186,6 +188,7 @@
 				2D91C2102228A277004BC072 /* APODViewController.swift */,
 				2D91C2122228A289004BC072 /* MarsRoverViewController.swift */,
 				2DB076972234685C0076CFEB /* RefineSearchViewController.swift */,
+				2D91C65A22371CDA0087B97D /* PostcardViewController.swift */,
 				2D59BF7B222B4B3F0073A295 /* MarsCollectionViewCell.swift */,
 				2D91C2142228A293004BC072 /* EarthViewController.swift */,
 				2D9E0AB02230843300FF8BCB /* LocationSearchTableViewController.swift */,
@@ -345,6 +348,7 @@
 				2D2F05C82222165A00F3627F /* MarsSearch.swift in Sources */,
 				2D9D650422273D2D0017E9C6 /* Extensions.swift in Sources */,
 				2D2F05C3222208B200F3627F /* Endpoint.swift in Sources */,
+				2D91C65B22371CDA0087B97D /* PostcardViewController.swift in Sources */,
 				2D9E0AAF22307F5900FF8BCB /* LocationManager.swift in Sources */,
 				2D2F05CA2222186F00F3627F /* DailyPhotoSearch.swift in Sources */,
 				2DB076982234685C0076CFEB /* RefineSearchViewController.swift in Sources */,

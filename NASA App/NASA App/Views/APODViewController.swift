@@ -8,12 +8,14 @@
 
 import UIKit
 import Nuke
+import WebKit
 
 class APODViewController: UIViewController {
 	
 	// MARK: IBOutlets
 	
 	@IBOutlet weak var image: UIImageView!
+	@IBOutlet weak var webview: WKWebView!
 	@IBOutlet weak var titleLabel: UILabel!
 	@IBOutlet weak var dateLabel: UILabel!
 	@IBOutlet weak var explanationLabel: UILabel!
@@ -24,6 +26,8 @@ class APODViewController: UIViewController {
 	let firstDate = Date()
 	var currentDateDisplayed = Date()
 	let dateFormatter = DateFormatter()
+	var isVideo = false
+	var videoURL: URLRequest?
 	
 	var photo: UIImage?
 	var photoTitle: String?
@@ -40,7 +44,17 @@ class APODViewController: UIViewController {
 		titleLabel.text = currentPhoto.title
 		dateLabel.text = currentPhoto.date
 		explanationLabel.text = currentPhoto.explanation
-		image.image = photo
+		
+		if isVideo {
+			image.isHidden = true
+			webview.isHidden = false
+			guard let url = videoURL else { return }
+			self.webview?.load(url)
+		} else {
+			image.isHidden = false
+			webview.isHidden = true
+			image.image = photo
+		}
 	
 		self.activityIndicator.hidesWhenStopped = true
 		
@@ -61,11 +75,25 @@ class APODViewController: UIViewController {
 	// MARK: Custom functions
 	
 	func updateUI(for photo: Daily) {
-		let url = UrlHandling.getURL(imageUrl: photo.url)
-		guard let urlToLoad = url else { return }
-		Nuke.loadImage(with: urlToLoad, into: image) { response, _ in
-			self.image?.image = response?.image
+		if photo.mediaType == "video" {
+			isVideo = true
+			image.isHidden = true
+			webview.isHidden = false
+			guard let url = URL(string: photo.url) else { return }
+			let request = URLRequest(url: url)
+			self.videoURL = request
+			self.webview?.load(request)
 			self.activityIndicator.stopAnimating()
+		} else {
+			isVideo = false
+			image.isHidden = false
+			webview.isHidden = true
+			let url = UrlHandling.getURL(imageUrl: photo.url)
+			guard let urlToLoad = url else { return }
+			Nuke.loadImage(with: urlToLoad, into: image) { response, _ in
+				self.image?.image = response?.image
+				self.activityIndicator.stopAnimating()
+			}
 		}
 		titleLabel.text = photo.title
 		dateLabel.text = photo.date

@@ -21,7 +21,10 @@ class MarsRoverViewController: UIViewController {
 	@IBOutlet weak var solLabel: UILabel!
 	@IBOutlet weak var collectionView: UICollectionView!
 	@IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+	
+	@IBOutlet weak var randomizeButton: UIButton!
 	@IBOutlet weak var refineSearchButton: UIButton!
+	@IBOutlet weak var postcardButton: UIButton!
 	
 	
 	// MARK: Variables
@@ -52,7 +55,9 @@ class MarsRoverViewController: UIViewController {
 		cameraLabel.text = cameraName
 		fullCameraNameLabel.text = fullCameraName
 		
+		randomizeButton.layer.cornerRadius = 10
 		refineSearchButton.layer.cornerRadius = 10
+		postcardButton.layer.cornerRadius = 10
 		
 		loadData()
     }
@@ -66,8 +71,10 @@ class MarsRoverViewController: UIViewController {
 			case .success(let response):
 				DispatchQueue.main.async {
 					guard let response = response.first?.photos, let first = response.first else {
-						self.showAlert(title: "Connection failed", message: "Json response failed, please try again later.")
-						print("no data found")
+						//self.showAlert(title: "Connection failed", message: "Json response failed, please try again later.")
+						MarsSearch.marsSearch.sol = Int.random(in: 0...2200)
+						print("re-randomized results")
+						self.loadData()
 						return
 					}
 					
@@ -145,17 +152,49 @@ class MarsRoverViewController: UIViewController {
     }
     */
 	
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+		if segue.destination is PostcardViewController {
+			let destinationViewController = segue.destination as? PostcardViewController
+			destinationViewController?.photo = image.image
+		}
+	}
+	
 	@IBAction func unwindToRover(segue: UIStoryboardSegue) {
 		marsPhotos.removeAll()
 		viewDidLoad()
-		print("called from unwind")
 	}
 	
 	// MARK: IBActions
 	
+	@IBAction func randomizeButtonPressed(_ sender: UIButton) {
+		MarsSearch.marsSearch.sol = Int.random(in: 0...2200)
+		MarsSearch.marsSearch.rover = {
+			let randomRover = Int.random(in: 1...3)
+			if randomRover == 1 {
+				return MarsSearch.Rover.curiosity
+			} else if randomRover == 2 {
+				return MarsSearch.Rover.opportunity
+			} else if randomRover == 3 {
+				return MarsSearch.Rover.spirit
+			} else {
+				return MarsSearch.Rover.noSelection
+			}
+		}()
+		
+		// reset pagination
+		currentPage = 1
+		
+		loadData()
+	}
+	
 	@IBAction func refineSearchButtonPressed(_ sender: Any) {
 		performSegue(withIdentifier: "refineSearch", sender: Any?.self)
 	}
+	
+	@IBAction func postcardButtonPressed(_ sender: UIButton) {
+		performSegue(withIdentifier: "makePostcard", sender: Any?.self)
+	}
+	
 	
 }
 

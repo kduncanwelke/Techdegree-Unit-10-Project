@@ -13,5 +13,6 @@ struct Daily: SearchType {
 	let title: String
 	let explanation: String
 	let url: String
+	let mediaType: String
 	static var endpoint = Endpoint.dailyPhoto
 }
