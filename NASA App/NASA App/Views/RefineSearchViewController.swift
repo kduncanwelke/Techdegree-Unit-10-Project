@@ -84,11 +84,15 @@ class RefineSearchViewController: UIViewController {
 	
 	
 	@IBAction func viewResultsButtonPressed(_ sender: Any) {
-		let selectedDate = datePicker.date
-		let dateString = dateFormatter.string(from: selectedDate)
-		MarsSearch.marsSearch.earthDate = dateString
-		
-		performSegue(withIdentifier: "unwindToRover", sender: self)
+		if roverSelection.selectedSegmentIndex == -1 {
+			showAlert(title: "Please make a selection", message: "A rover selection is required to narrow results")
+		} else {
+			 let selectedDate = datePicker.date
+			 let dateString = dateFormatter.string(from: selectedDate)
+			 MarsSearch.marsSearch.earthDate = dateString
+			
+			 performSegue(withIdentifier: "unwindToRover", sender: self)
+		}
 	}
 	
 	@IBAction func cancelButtonPressed(_ sender: Any) {

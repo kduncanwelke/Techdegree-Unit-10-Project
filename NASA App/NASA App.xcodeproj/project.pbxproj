@@ -30,6 +30,8 @@
 		2D9D650422273D2D0017E9C6 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D9D650322273D2D0017E9C6 /* Extensions.swift */; };
 		2D9E0AAF22307F5900FF8BCB /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D9E0AAE22307F5900FF8BCB /* LocationManager.swift */; };
 		2D9E0AB12230843300FF8BCB /* LocationSearchTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D9E0AB02230843300FF8BCB /* LocationSearchTableViewController.swift */; };
+		2DA5BD9F223855A90079CB8D /* PostcardCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA5BD9E223855A90079CB8D /* PostcardCollectionViewCell.swift */; };
+		2DA5BDA1223857AE0079CB8D /* ImageFilters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA5BDA0223857AE0079CB8D /* ImageFilters.swift */; };
 		2DA89DFF222465AC004266EB /* Earth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA89DFE222465AC004266EB /* Earth.swift */; };
 		2DA89E0122247205004266EB /* Mars.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA89E0022247205004266EB /* Mars.swift */; };
 		2DA89E032224766B004266EB /* Daily.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA89E022224766B004266EB /* Daily.swift */; };
@@ -78,6 +80,8 @@
 		2D9D650322273D2D0017E9C6 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		2D9E0AAE22307F5900FF8BCB /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		2D9E0AB02230843300FF8BCB /* LocationSearchTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSearchTableViewController.swift; sourceTree = "<group>"; };
+		2DA5BD9E223855A90079CB8D /* PostcardCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostcardCollectionViewCell.swift; sourceTree = "<group>"; };
+		2DA5BDA0223857AE0079CB8D /* ImageFilters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageFilters.swift; sourceTree = "<group>"; };
 		2DA89DFE222465AC004266EB /* Earth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Earth.swift; sourceTree = "<group>"; };
 		2DA89E0022247205004266EB /* Mars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mars.swift; sourceTree = "<group>"; };
 		2DA89E022224766B004266EB /* Daily.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Daily.swift; sourceTree = "<group>"; };
@@ -177,6 +181,7 @@
 				2DA89DFE222465AC004266EB /* Earth.swift */,
 				2DA89E0022247205004266EB /* Mars.swift */,
 				2DA89E022224766B004266EB /* Daily.swift */,
+				2DA5BDA0223857AE0079CB8D /* ImageFilters.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -187,9 +192,10 @@
 				2D2F059D2221F87B00F3627F /* ViewController.swift */,
 				2D91C2102228A277004BC072 /* APODViewController.swift */,
 				2D91C2122228A289004BC072 /* MarsRoverViewController.swift */,
+				2D59BF7B222B4B3F0073A295 /* MarsCollectionViewCell.swift */,
 				2DB076972234685C0076CFEB /* RefineSearchViewController.swift */,
 				2D91C65A22371CDA0087B97D /* PostcardViewController.swift */,
-				2D59BF7B222B4B3F0073A295 /* MarsCollectionViewCell.swift */,
+				2DA5BD9E223855A90079CB8D /* PostcardCollectionViewCell.swift */,
 				2D91C2142228A293004BC072 /* EarthViewController.swift */,
 				2D9E0AB02230843300FF8BCB /* LocationSearchTableViewController.swift */,
 			);
@@ -329,6 +335,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2D2F059E2221F87B00F3627F /* ViewController.swift in Sources */,
+				2DA5BDA1223857AE0079CB8D /* ImageFilters.swift in Sources */,
 				2D903C3A223197C400464933 /* Protocols.swift in Sources */,
 				2DA89E0B222480B3004266EB /* DataManager.swift in Sources */,
 				2D2F059C2221F87B00F3627F /* AppDelegate.swift in Sources */,
@@ -350,6 +357,7 @@
 				2D2F05C3222208B200F3627F /* Endpoint.swift in Sources */,
 				2D91C65B22371CDA0087B97D /* PostcardViewController.swift in Sources */,
 				2D9E0AAF22307F5900FF8BCB /* LocationManager.swift in Sources */,
+				2DA5BD9F223855A90079CB8D /* PostcardCollectionViewCell.swift in Sources */,
 				2D2F05CA2222186F00F3627F /* DailyPhotoSearch.swift in Sources */,
 				2DB076982234685C0076CFEB /* RefineSearchViewController.swift in Sources */,
 				2D2F05BD222207E000F3627F /* Networker.swift in Sources */,

@@ -183,8 +183,12 @@ class MarsRoverViewController: UIViewController {
 		
 		// reset pagination
 		currentPage = 1
+		marsPhotos.removeAll()
 		
 		loadData()
+		if marsPhotos.count > 0 {
+			collectionView.scrollsToTop = true
+		}
 	}
 	
 	@IBAction func refineSearchButtonPressed(_ sender: Any) {
