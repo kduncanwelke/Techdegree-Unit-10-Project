@@ -783,6 +783,16 @@
                                     <outletCollection property="gestureRecognizers" destination="hP0-0k-3wl" appends="YES" id="DAa-dx-6SK"/>
                                 </connections>
                             </mapView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gcD-aO-REB">
+                                <rect key="frame" x="70" y="810" width="274" height="30"/>
+                                <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <state key="normal" title="Import Address from Contacts">
+                                    <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                </state>
+                                <connections>
+                                    <action selector="importContactButtonTapped:" destination="ppk-Pd-aJS" eventType="touchUpInside" id="ZF6-fi-9R3"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
                         <constraints>
@@ -797,7 +807,10 @@
                             <constraint firstItem="P3D-e6-crW" firstAttribute="top" secondItem="2cN-9Y-Q38" secondAttribute="bottom" id="V78-ji-HhQ"/>
                             <constraint firstItem="wXn-cF-VxN" firstAttribute="trailing" secondItem="iOJ-wm-El2" secondAttribute="trailing" id="WIh-Xv-edv"/>
                             <constraint firstItem="F8p-PP-QJP" firstAttribute="centerX" secondItem="DtC-sU-ouM" secondAttribute="centerX" id="f1F-Bx-rMa"/>
+                            <constraint firstItem="gcD-aO-REB" firstAttribute="leading" secondItem="wXn-cF-VxN" secondAttribute="leading" constant="70" id="onT-cw-I9N"/>
+                            <constraint firstItem="wXn-cF-VxN" firstAttribute="trailing" secondItem="gcD-aO-REB" secondAttribute="trailing" constant="70" id="s0Z-Kc-kQe"/>
                             <constraint firstItem="2cN-9Y-Q38" firstAttribute="leading" secondItem="wXn-cF-VxN" secondAttribute="leading" constant="20" id="tse-9A-S3s"/>
+                            <constraint firstItem="wXn-cF-VxN" firstAttribute="bottom" secondItem="gcD-aO-REB" secondAttribute="bottom" constant="22" id="wSc-nM-QgH"/>
                             <constraint firstItem="DtC-sU-ouM" firstAttribute="trailing" secondItem="wXn-cF-VxN" secondAttribute="trailing" id="y8i-ic-0bk"/>
                             <constraint firstItem="iOJ-wm-El2" firstAttribute="leading" secondItem="wXn-cF-VxN" secondAttribute="leading" id="zwY-Ib-bGZ"/>
                         </constraints>
@@ -809,6 +822,7 @@
                         <outlet property="coordinatesLabel" destination="AQr-84-8iX" id="2SJ-ao-Pu4"/>
                         <outlet property="dateLabel" destination="JUR-vv-Igo" id="fWI-Hx-lwc"/>
                         <outlet property="image" destination="DtC-sU-ouM" id="XyI-Jb-Qsl"/>
+                        <outlet property="importButton" destination="gcD-aO-REB" id="U5F-13-Ueo"/>
                         <outlet property="locationLabel" destination="2cN-9Y-Q38" id="nqq-Fa-eUR"/>
                         <outlet property="mapView" destination="iOJ-wm-El2" id="onS-BZ-XcP"/>
                     </connections>

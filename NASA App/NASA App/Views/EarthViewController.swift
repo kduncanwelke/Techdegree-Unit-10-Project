@@ -10,6 +10,7 @@ import UIKit
 import CoreLocation
 import MapKit
 import Nuke
+import ContactsUI
 
 class EarthViewController: UIViewController, UITableViewDelegate {
 	
@@ -21,6 +22,7 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 	@IBOutlet weak var dateLabel: UILabel!
 	@IBOutlet weak var mapView: MKMapView!
 	@IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+	@IBOutlet weak var importButton: UIButton!
 	
 	
 	// MARK: Variables
@@ -46,6 +48,8 @@ class EarthViewController: UIViewController, UITableViewDelegate {
         // Do any additional setup after loading the view.
 		locationManager.delegate = self
 		mapView.delegate = self
+		
+		importButton.layer.cornerRadius = 10
 		
 		locationManager.desiredAccuracy = kCLLocationAccuracyBest
 		locationManager.requestLocation()
@@ -146,6 +150,13 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 		}
 	}
 	
+	
+	@IBAction func importContactButtonTapped(_ sender: UIButton) {
+		let contactPicker = CNContactPickerViewController()
+		contactPicker.delegate = self
+		self.present(contactPicker, animated: true, completion: nil)
+	}
+	
 }
 
 
@@ -222,5 +233,29 @@ extension EarthViewController: UISearchControllerDelegate, UISearchResultsUpdati
 extension EarthViewController: MapUpdaterDelegate {
 	func updateMapLocation(for location: MKPlacemark) {
 		updateLocation(location: location)
+	}
+}
+
+extension EarthViewController: CNContactPickerDelegate {
+	func contactPicker(_ picker: CNContactPickerViewController, didSelect contact: CNContact) {
+		guard let address = contact.postalAddresses.first?.value else { return }
+		print(address)
+		
+		let geocoder = CLGeocoder()
+		geocoder.geocodePostalAddress(address) { (placemarks, error) in
+			if error == nil {
+				guard let placemark = placemarks?[0] else { return }
+					let location = placemark.location!
+					
+					let locale = MKPlacemark(coordinate: location.coordinate)
+					EarthSearch.earthSearch.latitude = locale.coordinate.latitude
+					EarthSearch.earthSearch.longitude = locale.coordinate.longitude
+					self.updateLocation(location: locale)
+					print("did geocoding")
+					return
+				} else {
+				print("Error: \(error)")
+			}
+		}
 	}
 }
