@@ -28,6 +28,7 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 	// MARK: Variables
 	
 	var usingCurrentLocation = true
+	var locationFromMapTap = false
 	let locationManager = CLLocationManager()
 	var photo: UIImage?
 	var date: String?
@@ -121,7 +122,24 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 						self.activityIndicator.stopAnimating()
 					}
 					self.dateLabel.text = "\(photo.date)"
-					self.locationLabel.text = LocationManager.parseAddress(selectedItem: location)
+					
+					if self.locationFromMapTap {
+						let locale = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+						let geocoder = CLGeocoder()
+						
+						geocoder.reverseGeocodeLocation(locale, completionHandler: { (placemarks, error) in
+							if error == nil {
+								guard let firstLocation = placemarks?[0] else { return }
+								self.locationLabel.text = LocationManager.parseAddress(selectedItem: firstLocation)
+							}
+							else {
+								// an error occurred during geocoding
+								print("error")
+							}
+						})
+					} else {
+						self.locationLabel.text = LocationManager.parseAddress(selectedItem: location)
+					}
 					self.coordinatesLabel.text = "\(EarthSearch.earthSearch.latitude), \(EarthSearch.earthSearch.longitude)"
 				}
 			case .failure(let error):
@@ -146,6 +164,7 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 			let placemark = MKPlacemark(coordinate: coordinate)
 			EarthSearch.earthSearch.latitude = placemark.coordinate.latitude
 			EarthSearch.earthSearch.longitude = placemark.coordinate.longitude
+			locationFromMapTap = true
 			updateLocation(location: placemark)
 		}
 	}
@@ -198,30 +217,6 @@ extension EarthViewController: CLLocationManagerDelegate, MKMapViewDelegate {
 	func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
 		showAlert(title: "Geolocation failed", message: "\(error)")
 	}
-	/*
-	func lookUpCurrentLocation(completionHandler: @escaping (CLPlacemark?) -> Void ) {
-		// use the last reported location
-		if let lastLocation = self.locationManager.location {
-			let geocoder = CLGeocoder()
-			
-			// look up the location name
-			geocoder.reverseGeocodeLocation(lastLocation, completionHandler: { (placemarks, error) in
-				if error == nil {
-					let firstLocation = placemarks?[0]
-					completionHandler(firstLocation)
-				}
-				else {
-					// an error occurred during geocoding
-					completionHandler(nil)
-				}
-			})
-		}
-		else {
-			// no location was available
-			completionHandler(nil)
-		}
-	}
-*/
 }
 
 extension EarthViewController: UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate {
@@ -240,21 +235,21 @@ extension EarthViewController: CNContactPickerDelegate {
 	func contactPicker(_ picker: CNContactPickerViewController, didSelect contact: CNContact) {
 		guard let address = contact.postalAddresses.first?.value else { return }
 		print(address)
+		locationFromMapTap = false
 		
 		let geocoder = CLGeocoder()
 		geocoder.geocodePostalAddress(address) { (placemarks, error) in
 			if error == nil {
-				guard let placemark = placemarks?[0] else { return }
-					let location = placemark.location!
-					
-					let locale = MKPlacemark(coordinate: location.coordinate)
+				guard let placemark = placemarks?[0], let location = placemark.location else { return }
+					let locale = MKPlacemark(coordinate: location.coordinate, postalAddress: address)
+				
 					EarthSearch.earthSearch.latitude = locale.coordinate.latitude
 					EarthSearch.earthSearch.longitude = locale.coordinate.longitude
 					self.updateLocation(location: locale)
 					print("did geocoding")
 					return
 				} else {
-				print("Error: \(error)")
+				self.showAlert(title: "Location not found", message: "The location could not be found, please try another selection")
 			}
 		}
 	}
