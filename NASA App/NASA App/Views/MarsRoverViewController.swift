@@ -214,7 +214,7 @@ extension MarsRoverViewController: UICollectionViewDataSource {
 		cell.cellActivityIndicator.startAnimating()
 		if let urlToLoad = url {
 			Nuke.loadImage(with: urlToLoad, into: cell.image) { response, _ in
-				self.image?.image = response?.image
+				cell.image?.image = response?.image
 				cell.cellActivityIndicator.stopAnimating()
 			}
 		}

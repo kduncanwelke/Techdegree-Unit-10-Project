@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreImage
+import CoreGraphics
 
 class PostcardViewController: UIViewController {
 	
@@ -15,6 +16,8 @@ class PostcardViewController: UIViewController {
 	
 	@IBOutlet weak var image: UIImageView!
 	@IBOutlet weak var collectionView: UICollectionView!
+	@IBOutlet weak var textField: UITextField!
+	
 	
 	// MARK: Variables
 	
@@ -46,6 +49,29 @@ class PostcardViewController: UIViewController {
 			photoToProcess.image = processedImage
 		}
 	}
+	
+	func textToImage(text: String, image: UIImage) -> UIImage {
+		UIGraphicsBeginImageContext(image.size)
+		
+		image.draw(in: CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height))
+	
+		let font = UIFont(name: "Helvetica-Bold", size: 32)!
+		let textStyle = NSMutableParagraphStyle()
+		textStyle.alignment = NSTextAlignment.center
+		let textColor = UIColor.white
+		let attributes = [NSAttributedString.Key.font: font, NSAttributedString.Key.paragraphStyle: textStyle, NSAttributedString.Key.foregroundColor: textColor]
+		
+		//vertically center (depending on font)
+		let textHeight = font.lineHeight
+		let textY = (image.size.height) / 2
+		let textRect = CGRect(x: 0, y: textY, width: image.size.width, height: textHeight)
+		text.draw(in: textRect.integral, withAttributes: attributes)
+		
+		let newImage = UIGraphicsGetImageFromCurrentImageContext()
+		UIGraphicsEndImageContext()
+		
+		return newImage!
+	}
 
     /*
     // MARK: - Navigation
@@ -63,6 +89,15 @@ class PostcardViewController: UIViewController {
 		self.dismiss(animated: true, completion: nil)
 	}
 
+	@IBAction func applyTextButtonPressed(_ sender: UIButton) {
+		guard let imageToUse = image.image, let text = textField.text else { return }
+		let newImage = textToImage(text: text, image: imageToUse)
+		
+		image.image = newImage
+		
+		textField.text = nil
+	}
+	
 }
 
 extension PostcardViewController: UICollectionViewDataSource {

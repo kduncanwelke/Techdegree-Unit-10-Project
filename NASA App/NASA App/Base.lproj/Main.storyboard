@@ -707,19 +707,37 @@
                                     <action selector="cancelButtonTapped:" destination="oQ5-K6-g7M" eventType="touchUpInside" id="hTP-Rg-2fV"/>
                                 </connections>
                             </button>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter postcard text . . ." textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="PIH-dW-dgU">
+                                <rect key="frame" x="20" y="510" width="374" height="30"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sgR-vK-P8s">
+                                <rect key="frame" x="171" y="562" width="72" height="30"/>
+                                <state key="normal" title="Apply Text"/>
+                                <connections>
+                                    <action selector="applyTextButtonPressed:" destination="oQ5-K6-g7M" eventType="touchUpInside" id="aRf-jt-vH7"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
                         <constraints>
+                            <constraint firstItem="0nt-li-jIW" firstAttribute="trailing" secondItem="PIH-dW-dgU" secondAttribute="trailing" constant="20" id="0dO-K2-wTZ"/>
                             <constraint firstItem="BeN-Jl-deO" firstAttribute="top" secondItem="W7t-iY-RJn" secondAttribute="bottom" id="1ze-be-ua2"/>
                             <constraint firstItem="BeN-Jl-deO" firstAttribute="leading" secondItem="0nt-li-jIW" secondAttribute="leading" id="9VH-u5-48h"/>
+                            <constraint firstItem="sgR-vK-P8s" firstAttribute="top" secondItem="PIH-dW-dgU" secondAttribute="bottom" constant="22" id="RWj-hg-jvu"/>
                             <constraint firstItem="W7t-iY-RJn" firstAttribute="trailing" secondItem="0nt-li-jIW" secondAttribute="trailing" id="SqC-Ax-5g6"/>
                             <constraint firstItem="W7t-iY-RJn" firstAttribute="top" secondItem="0nt-li-jIW" secondAttribute="top" id="UDV-Om-L84"/>
+                            <constraint firstItem="sgR-vK-P8s" firstAttribute="centerX" secondItem="Kqz-IQ-i7W" secondAttribute="centerX" id="VgG-0c-Dfe"/>
                             <constraint firstItem="0nt-li-jIW" firstAttribute="trailing" secondItem="hk0-ZM-G2j" secondAttribute="trailing" id="Yfi-60-baU"/>
                             <constraint firstItem="0nt-li-jIW" firstAttribute="bottom" secondItem="iwc-GI-PTT" secondAttribute="bottom" constant="45" id="hjE-90-m1O"/>
                             <constraint firstItem="hk0-ZM-G2j" firstAttribute="leading" secondItem="0nt-li-jIW" secondAttribute="leading" id="hlQ-I2-Xuw"/>
                             <constraint firstItem="hk0-ZM-G2j" firstAttribute="top" secondItem="BeN-Jl-deO" secondAttribute="bottom" constant="22" id="iqf-eX-2PN"/>
+                            <constraint firstItem="PIH-dW-dgU" firstAttribute="top" secondItem="hk0-ZM-G2j" secondAttribute="bottom" constant="22" id="ljW-pv-Lpn"/>
                             <constraint firstItem="0nt-li-jIW" firstAttribute="trailing" secondItem="BeN-Jl-deO" secondAttribute="trailing" id="oaC-W9-9y0"/>
                             <constraint firstItem="W7t-iY-RJn" firstAttribute="leading" secondItem="0nt-li-jIW" secondAttribute="leading" id="sxC-DA-ywa"/>
+                            <constraint firstItem="PIH-dW-dgU" firstAttribute="leading" secondItem="0nt-li-jIW" secondAttribute="leading" constant="20" id="tp6-VU-DG9"/>
                             <constraint firstItem="iwc-GI-PTT" firstAttribute="centerX" secondItem="Kqz-IQ-i7W" secondAttribute="centerX" id="ySV-Yq-5k4"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="0nt-li-jIW"/>
@@ -727,6 +745,7 @@
                     <connections>
                         <outlet property="collectionView" destination="hk0-ZM-G2j" id="kR9-Fx-oXA"/>
                         <outlet property="image" destination="BeN-Jl-deO" id="ifq-41-p2f"/>
+                        <outlet property="textField" destination="PIH-dW-dgU" id="RhV-Hc-mxT"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jqg-6P-BsO" userLabel="First Responder" sceneMemberID="firstResponder"/>
