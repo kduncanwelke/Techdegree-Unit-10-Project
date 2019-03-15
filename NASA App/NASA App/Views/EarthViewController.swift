@@ -34,14 +34,6 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 	var date: String?
 	var searchController = UISearchController(searchResultsController: nil)
 	
-	var isDoneLoading = false {
-		didSet {
-			if isDoneLoading == true {
-				self.activityIndicator.stopAnimating()
-				print("didset activated")
-			}
-		}
-	}
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -100,10 +92,29 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 		let region = MKCoordinateRegion(center: coordinate, latitudinalMeters: regionRadius, longitudinalMeters: regionRadius)
 		
 		let annotation = MKPointAnnotation()
-		annotation.coordinate = coordinate
-		annotation.title = location.title
-		mapView.addAnnotation(annotation)
 		
+		// if location came from map tap, parse address to assign it to title for pin
+		if self.locationFromMapTap {
+			let locale = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+			let geocoder = CLGeocoder()
+			
+			geocoder.reverseGeocodeLocation(locale, completionHandler: { (placemarks, error) in
+				if error == nil {
+					guard let firstLocation = placemarks?[0] else { return }
+					annotation.title = LocationManager.parseAddress(selectedItem: firstLocation)
+				}
+				else {
+					// an error occurred during geocoding
+					self.showAlert(title: "Error geocoding", message: "Location could not be parsed")
+				}
+			})
+		} else {
+			// otherwise use location that was included with location object
+			annotation.title = location.title
+		}
+		
+		annotation.coordinate = coordinate
+		mapView.addAnnotation(annotation)
 		mapView.setRegion(region, animated: true)
 		
 		self.activityIndicator.startAnimating()
@@ -122,24 +133,7 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 						self.activityIndicator.stopAnimating()
 					}
 					self.dateLabel.text = "\(photo.date)"
-					
-					if self.locationFromMapTap {
-						let locale = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
-						let geocoder = CLGeocoder()
-						
-						geocoder.reverseGeocodeLocation(locale, completionHandler: { (placemarks, error) in
-							if error == nil {
-								guard let firstLocation = placemarks?[0] else { return }
-								self.locationLabel.text = LocationManager.parseAddress(selectedItem: firstLocation)
-							}
-							else {
-								// an error occurred during geocoding
-								print("error")
-							}
-						})
-					} else {
-						self.locationLabel.text = LocationManager.parseAddress(selectedItem: location)
-					}
+					self.locationLabel.text = annotation.title
 					self.coordinatesLabel.text = "\(EarthSearch.earthSearch.latitude), \(EarthSearch.earthSearch.longitude)"
 				}
 			case .failure(let error):
@@ -234,7 +228,6 @@ extension EarthViewController: MapUpdaterDelegate {
 extension EarthViewController: CNContactPickerDelegate {
 	func contactPicker(_ picker: CNContactPickerViewController, didSelect contact: CNContact) {
 		guard let address = contact.postalAddresses.first?.value else { return }
-		print(address)
 		locationFromMapTap = false
 		
 		let geocoder = CLGeocoder()

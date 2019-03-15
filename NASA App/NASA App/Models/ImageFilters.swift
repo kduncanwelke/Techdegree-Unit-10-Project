@@ -27,6 +27,5 @@ struct ImageFilters {
 		CIFilter(name: "CICrystallize")!,
 		CIFilter(name: "CIPixellate")!,
 		CIFilter(name: "CIKaleidoscope")!
-		
 	]
 }

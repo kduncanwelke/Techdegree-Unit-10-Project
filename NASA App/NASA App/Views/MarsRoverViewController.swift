@@ -156,6 +156,8 @@ class MarsRoverViewController: UIViewController {
 		if segue.destination is PostcardViewController {
 			let destinationViewController = segue.destination as? PostcardViewController
 			destinationViewController?.photo = image.image
+			destinationViewController?.roverName = roverTitle
+			destinationViewController?.date = date
 		}
 	}
 	

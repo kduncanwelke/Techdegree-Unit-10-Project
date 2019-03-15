@@ -9,6 +9,7 @@
 import UIKit
 import CoreImage
 import CoreGraphics
+import MessageUI
 
 class PostcardViewController: UIViewController {
 	
@@ -18,11 +19,14 @@ class PostcardViewController: UIViewController {
 	@IBOutlet weak var collectionView: UICollectionView!
 	@IBOutlet weak var textField: UITextField!
 	@IBOutlet weak var resetButton: UIButton!
+	@IBOutlet weak var emailButton: UIButton!
 	
 
 	// MARK: Variables
 	
 	var photo: UIImage?
+	var roverName: String?
+	var date: String?
 	let context = CIContext()
 	var currentFilter = ImageFilters.filters.first
 
@@ -34,6 +38,7 @@ class PostcardViewController: UIViewController {
 		collectionView.dataSource = self
 		
 		resetButton.layer.cornerRadius = 10
+		emailButton.layer.cornerRadius = 10
 		
 		image.image = photo
 		
@@ -54,27 +59,60 @@ class PostcardViewController: UIViewController {
 	}
 	
 	func textToImage(text: String, image: UIImage) -> UIImage {
-		UIGraphicsBeginImageContext(image.size)
+		let scale = UIScreen.main.scale
+		UIGraphicsBeginImageContextWithOptions(image.size, false, scale)
 		
 		image.draw(in: CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height))
 	
-		let fontScaling = 0.05 * image.size.width
-		let font = UIFont(name: "Helvetica-Bold", size: fontScaling)!
-		let textStyle = NSMutableParagraphStyle()
-		textStyle.alignment = NSTextAlignment.center
-		let textColor = UIColor.white
-		let attributes = [NSAttributedString.Key.font: font, NSAttributedString.Key.paragraphStyle: textStyle, NSAttributedString.Key.foregroundColor: textColor]
-		
-		//vertically center (depending on font)
-		let textHeight = font.lineHeight
-		let textY = (image.size.height - textHeight) / 2
-		let textRect = CGRect(x: 0, y: textY, width: image.size.width, height: textHeight)
-		text.draw(in: textRect.integral, withAttributes: attributes)
-		
-		let newImage = UIGraphicsGetImageFromCurrentImageContext()
-		UIGraphicsEndImageContext()
-		
-		return newImage!
+		let fontScaling = max(0.05 * image.size.width, 3.0)
+		if let font = UIFont(name: "Helvetica-Bold", size: fontScaling) {
+			let textStyle = NSMutableParagraphStyle()
+			textStyle.lineBreakMode = NSLineBreakMode.byWordWrapping
+			textStyle.alignment = NSTextAlignment.center
+			let textColor = UIColor.white
+			let attributes = [NSAttributedString.Key.font: font, NSAttributedString.Key.paragraphStyle: textStyle, NSAttributedString.Key.foregroundColor: textColor]
+			
+			// vertically center text
+			let textHeight = font.lineHeight
+			let textYPosition = (image.size.height / 2) - textHeight
+			let textRect = CGRect(x: 0, y: textYPosition, width: image.size.width, height: image.size.height)
+			text.draw(in: textRect.integral, withAttributes: attributes)
+		}
+			
+			let roverFontScaling = max(0.02 * image.size.width, 3.0)
+			if let roverFont = UIFont(name: "Helvetica-Bold", size: roverFontScaling) {
+				let textColor = UIColor.white
+				let textHeight = roverFont.lineHeight
+				let roverAttributes = [NSAttributedString.Key.font: roverFont, NSAttributedString.Key.paragraphStyle: NSMutableParagraphStyle(), NSAttributedString.Key.foregroundColor: textColor]
+				let roverInfoRect = CGRect(x: image.size.width / 10, y: (image.size.height / 4) - textHeight, width: image.size.width, height: image.size.height)
+				
+				
+				if let name = roverName, let day = date {
+					let roverInfoString = "\(name), \(day)"
+					roverInfoString.draw(in: roverInfoRect.integral, withAttributes: roverAttributes)
+				}
+			}
+
+			let newImage = UIGraphicsGetImageFromCurrentImageContext()
+			UIGraphicsEndImageContext()
+			
+			return newImage!
+		}
+	
+	func sendEmail() {
+		if MFMailComposeViewController.canSendMail() {
+			let mail = MFMailComposeViewController()
+			mail.mailComposeDelegate = self
+			mail.setToRecipients(["darkhorse357@gmail.com"])
+			mail.setSubject("Mars Rover Postcard")
+			mail.setMessageBody("Image from NASA app", isHTML: false)
+			guard let currentImage = image.image else { return }
+			guard let imageData: Data = currentImage.pngData() else { return }
+			mail.addAttachmentData(imageData, mimeType: "image/png", fileName: "RoverPhoto.png")
+			present(mail, animated: true, completion: nil)
+		} else {
+			showAlert(title: "Email not available", message: "This device is not set up to send mail")
+		}
 	}
 
     /*
@@ -98,14 +136,17 @@ class PostcardViewController: UIViewController {
 		let newImage = textToImage(text: text, image: imageToUse)
 		
 		image.image = newImage
-		
-		//textField.text = nil
 	}
 	
 	
 	@IBAction func resetButtonTapped(_ sender: UIButton) {
 		image.image = photo
 		textField.text = nil
+	}
+	
+	
+	@IBAction func emailButtonPressed(_ sender: UIButton) {
+		sendEmail()
 	}
 	
 }
@@ -141,5 +182,11 @@ extension PostcardViewController: UICollectionViewDelegate {
 			let newImage = textToImage(text: text, image: imageToUse)
 			image.image = newImage
 		}
+	}
+}
+
+extension PostcardViewController: MFMailComposeViewControllerDelegate {
+	func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+		controller.dismiss(animated: true, completion: nil)
 	}
 }
