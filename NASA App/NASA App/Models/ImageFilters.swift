@@ -17,7 +17,16 @@ struct ImageFilters {
 		CIFilter(name: "CIVibrance")!,
 		CIFilter(name: "CIColorCube")!,
 		CIFilter(name: "CIPhotoEffectNoir")!,
-		CIFilter(name: "CIVignetteEffect")!,
-		CIFilter(name: "CIColorMatrix")!
+		CIFilter(name: "CIVignette")!,
+		CIFilter(name: "CIColorMatrix")!,
+		CIFilter(name: "CIBoxBlur")!,
+		CIFilter(name: "CIColorPosterize")!,
+		CIFilter(name: "CICircleSplashDistortion")!,
+		CIFilter(name: "CICircularScreen")!,
+		CIFilter(name: "CIDotScreen")!,
+		CIFilter(name: "CICrystallize")!,
+		CIFilter(name: "CIPixellate")!,
+		CIFilter(name: "CIKaleidoscope")!
+		
 	]
 }

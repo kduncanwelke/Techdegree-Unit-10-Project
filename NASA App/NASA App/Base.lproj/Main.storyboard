@@ -720,17 +720,30 @@
                                     <action selector="applyTextButtonPressed:" destination="oQ5-K6-g7M" eventType="touchUpInside" id="aRf-jt-vH7"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="m3S-gE-uXZ">
+                                <rect key="frame" x="120" y="631" width="174" height="30"/>
+                                <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <state key="normal" title="Reset">
+                                    <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                </state>
+                                <connections>
+                                    <action selector="resetButtonTapped:" destination="oQ5-K6-g7M" eventType="touchUpInside" id="I1X-LE-iyv"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
                         <constraints>
                             <constraint firstItem="0nt-li-jIW" firstAttribute="trailing" secondItem="PIH-dW-dgU" secondAttribute="trailing" constant="20" id="0dO-K2-wTZ"/>
                             <constraint firstItem="BeN-Jl-deO" firstAttribute="top" secondItem="W7t-iY-RJn" secondAttribute="bottom" id="1ze-be-ua2"/>
                             <constraint firstItem="BeN-Jl-deO" firstAttribute="leading" secondItem="0nt-li-jIW" secondAttribute="leading" id="9VH-u5-48h"/>
+                            <constraint firstItem="m3S-gE-uXZ" firstAttribute="leading" secondItem="0nt-li-jIW" secondAttribute="leading" constant="120" id="G6r-EN-mHt"/>
                             <constraint firstItem="sgR-vK-P8s" firstAttribute="top" secondItem="PIH-dW-dgU" secondAttribute="bottom" constant="22" id="RWj-hg-jvu"/>
                             <constraint firstItem="W7t-iY-RJn" firstAttribute="trailing" secondItem="0nt-li-jIW" secondAttribute="trailing" id="SqC-Ax-5g6"/>
+                            <constraint firstItem="m3S-gE-uXZ" firstAttribute="top" secondItem="sgR-vK-P8s" secondAttribute="bottom" constant="39" id="Twu-J0-ut9"/>
                             <constraint firstItem="W7t-iY-RJn" firstAttribute="top" secondItem="0nt-li-jIW" secondAttribute="top" id="UDV-Om-L84"/>
                             <constraint firstItem="sgR-vK-P8s" firstAttribute="centerX" secondItem="Kqz-IQ-i7W" secondAttribute="centerX" id="VgG-0c-Dfe"/>
                             <constraint firstItem="0nt-li-jIW" firstAttribute="trailing" secondItem="hk0-ZM-G2j" secondAttribute="trailing" id="Yfi-60-baU"/>
+                            <constraint firstItem="0nt-li-jIW" firstAttribute="trailing" secondItem="m3S-gE-uXZ" secondAttribute="trailing" constant="120" id="gd0-uz-HEY"/>
                             <constraint firstItem="0nt-li-jIW" firstAttribute="bottom" secondItem="iwc-GI-PTT" secondAttribute="bottom" constant="45" id="hjE-90-m1O"/>
                             <constraint firstItem="hk0-ZM-G2j" firstAttribute="leading" secondItem="0nt-li-jIW" secondAttribute="leading" id="hlQ-I2-Xuw"/>
                             <constraint firstItem="hk0-ZM-G2j" firstAttribute="top" secondItem="BeN-Jl-deO" secondAttribute="bottom" constant="22" id="iqf-eX-2PN"/>
@@ -745,6 +758,7 @@
                     <connections>
                         <outlet property="collectionView" destination="hk0-ZM-G2j" id="kR9-Fx-oXA"/>
                         <outlet property="image" destination="BeN-Jl-deO" id="ifq-41-p2f"/>
+                        <outlet property="resetButton" destination="m3S-gE-uXZ" id="m17-DR-3Os"/>
                         <outlet property="textField" destination="PIH-dW-dgU" id="RhV-Hc-mxT"/>
                     </connections>
                 </viewController>

@@ -17,8 +17,9 @@ class PostcardViewController: UIViewController {
 	@IBOutlet weak var image: UIImageView!
 	@IBOutlet weak var collectionView: UICollectionView!
 	@IBOutlet weak var textField: UITextField!
+	@IBOutlet weak var resetButton: UIButton!
 	
-	
+
 	// MARK: Variables
 	
 	var photo: UIImage?
@@ -31,6 +32,8 @@ class PostcardViewController: UIViewController {
         // Do any additional setup after loading the view.
 		collectionView.delegate = self
 		collectionView.dataSource = self
+		
+		resetButton.layer.cornerRadius = 10
 		
 		image.image = photo
 		
@@ -55,7 +58,8 @@ class PostcardViewController: UIViewController {
 		
 		image.draw(in: CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height))
 	
-		let font = UIFont(name: "Helvetica-Bold", size: 32)!
+		let fontScaling = 0.05 * image.size.width
+		let font = UIFont(name: "Helvetica-Bold", size: fontScaling)!
 		let textStyle = NSMutableParagraphStyle()
 		textStyle.alignment = NSTextAlignment.center
 		let textColor = UIColor.white
@@ -63,7 +67,7 @@ class PostcardViewController: UIViewController {
 		
 		//vertically center (depending on font)
 		let textHeight = font.lineHeight
-		let textY = (image.size.height) / 2
+		let textY = (image.size.height - textHeight) / 2
 		let textRect = CGRect(x: 0, y: textY, width: image.size.width, height: textHeight)
 		text.draw(in: textRect.integral, withAttributes: attributes)
 		
@@ -95,6 +99,12 @@ class PostcardViewController: UIViewController {
 		
 		image.image = newImage
 		
+		//textField.text = nil
+	}
+	
+	
+	@IBAction func resetButtonTapped(_ sender: UIButton) {
+		image.image = photo
 		textField.text = nil
 	}
 	
@@ -108,7 +118,8 @@ extension PostcardViewController: UICollectionViewDataSource {
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "postcardCell", for: indexPath) as! PostcardCollectionViewCell
 		cell.imageView.image = photo
-		cell.label.text = ImageFilters.filters[indexPath.row].name
+		let filterTitle = ImageFilters.filters[indexPath.row].name.dropFirst(2)
+		cell.label.text = "\(filterTitle)"
 		cell.activityIndicator.startAnimating()
 		currentFilter = ImageFilters.filters[indexPath.row]
 		applyProcessing(photoToProcess: cell.imageView)
@@ -121,6 +132,14 @@ extension PostcardViewController: UICollectionViewDelegate {
 	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 		let currentCell = collectionView.cellForItem(at: indexPath) as! PostcardCollectionViewCell
 		
-		image.image = currentCell.imageView.image
+		// if text field isn't empty, apply text to newly selected image
+		if textField.text == "" {
+			image.image = currentCell.imageView.image
+		} else {
+			guard let imageToUse = currentCell.imageView.image, let text = textField.text else { return }
+		
+			let newImage = textToImage(text: text, image: imageToUse)
+			image.image = newImage
+		}
 	}
 }
