@@ -8,8 +8,10 @@
 
 import Foundation
 import CoreImage
+import UIKit
+import Nuke
 
-struct ImageFilters {
+struct ImageInfo {
 	static let filters: [CIFilter] = [
 		CIFilter(name: "CISepiaTone")!,
 		CIFilter(name: "CIColorPolynomial")!,
@@ -28,4 +30,6 @@ struct ImageFilters {
 		CIFilter(name: "CIPixellate")!,
 		CIFilter(name: "CIKaleidoscope")!
 	]
+	
+	static let options = ImageLoadingOptions(placeholder: UIImage(named: "ipad_background_hori_x2"), transition: .fadeIn(duration: 0.33))
 }

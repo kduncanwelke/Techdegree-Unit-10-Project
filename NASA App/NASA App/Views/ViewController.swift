@@ -52,7 +52,6 @@ class ViewController: UIViewController {
 		locationManager.delegate = self
 		locationManager.desiredAccuracy = kCLLocationAccuracyBest
 		locationManager.requestLocation()
-		locationManager.startUpdatingLocation()
 		
 		
 		dailyPhotoActivityIndicator.startAnimating()
@@ -81,7 +80,7 @@ class ViewController: UIViewController {
 						self.currentDaily = photo
 						let url = UrlHandling.getURL(imageUrl: photo.url)
 						guard let urlToLoad = url else { return }
-						Nuke.loadImage(with: urlToLoad, into: self.dailyPhoto) { response, _ in
+						Nuke.loadImage(with: urlToLoad, options: ImageInfo.options, into: self.dailyPhoto) { response, _ in
 							self.dailyPhoto?.image = response?.image
 							self.dailyPhotoActivityIndicator.stopAnimating()
 						}
@@ -119,7 +118,7 @@ class ViewController: UIViewController {
 					self.currentEarth = photo
 					let url =  UrlHandling.getURL(imageUrl: photo.url)
 					guard let urlToLoad = url else { return }
-					Nuke.loadImage(with: urlToLoad, into: self.earthPhoto) { response, _ in
+					Nuke.loadImage(with: urlToLoad, options: ImageInfo.options, into: self.earthPhoto) { response, _ in
 						self.earthPhoto?.image = response?.image
 						self.earthPhotoActivityIndicator.stopAnimating()
 					}
@@ -168,7 +167,7 @@ class ViewController: UIViewController {
 					self.currentRover = response.first
 					let url =  UrlHandling.getURL(imageUrl: image)
 					guard let urlToLoad = url else { return }
-					Nuke.loadImage(with: urlToLoad, into: self.roverPhoto) { response, _ in
+					Nuke.loadImage(with: urlToLoad, options: ImageInfo.options, into: self.roverPhoto) { response, _ in
 						self.roverPhoto?.image = response?.image
 						self.roverPhotoActivityIndicator.stopAnimating()
 					}

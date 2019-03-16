@@ -27,6 +27,8 @@ class RefineSearchViewController: UIViewController {
 		datePicker.backgroundColor = UIColor.white
 		dateFormatter.dateFormat = "yyyy-MM-dd"
 		datePicker.isEnabled = false
+		
+		viewResultsButton.layer.cornerRadius = 10
     }
     
 
@@ -83,7 +85,8 @@ class RefineSearchViewController: UIViewController {
 	}
 	
 	
-	@IBAction func viewResultsButtonPressed(_ sender: Any) {
+	@IBAction func viewResultsButtonPressed(_ sender: UIButton) {
+		sender.animateButton()
 		if roverSelection.selectedSegmentIndex == -1 {
 			showAlert(title: "Please make a selection", message: "A rover selection is required to narrow results")
 		} else {

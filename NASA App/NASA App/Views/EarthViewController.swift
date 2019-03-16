@@ -128,7 +128,7 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 					}
 					let url = UrlHandling.getURL(imageUrl: photo.url)
 					guard let urlToLoad = url else { return }
-					Nuke.loadImage(with: urlToLoad, into: self.image) { response, _ in
+					Nuke.loadImage(with: urlToLoad, options: ImageInfo.options, into: self.image) { response, _ in
 						self.image?.image = response?.image
 						self.activityIndicator.stopAnimating()
 					}
@@ -165,6 +165,7 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 	
 	
 	@IBAction func importContactButtonTapped(_ sender: UIButton) {
+		sender.animateButton()
 		let contactPicker = CNContactPickerViewController()
 		contactPicker.delegate = self
 		self.present(contactPicker, animated: true, completion: nil)

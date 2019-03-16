@@ -28,7 +28,7 @@ class PostcardViewController: UIViewController {
 	var roverName: String?
 	var date: String?
 	let context = CIContext()
-	var currentFilter = ImageFilters.filters.first
+	var currentFilter = ImageInfo.filters.first
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,7 +43,24 @@ class PostcardViewController: UIViewController {
 		image.image = photo
 		
 		applyProcessing(photoToProcess: image)
+		
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
+	
+	@objc func keyboardWillShow(notification: NSNotification) {
+		if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+			if self.view.frame.origin.y == 0 {
+				self.view.frame.origin.y -= keyboardSize.height
+			}
+		}
+	}
+	
+	@objc func keyboardWillHide(notification: NSNotification) {
+		if self.view.frame.origin.y != 0 {
+			self.view.frame.origin.y = 0
+		}
+	}
 	
 	func applyProcessing(photoToProcess: UIImageView) {
 		//currentFilter?.setValue(intensity.value, forKey: kCIInputIntensityKey)
@@ -136,16 +153,19 @@ class PostcardViewController: UIViewController {
 		let newImage = textToImage(text: text, image: imageToUse)
 		
 		image.image = newImage
+		view.endEditing(true)
 	}
 	
 	
 	@IBAction func resetButtonTapped(_ sender: UIButton) {
+		sender.animateButton()
 		image.image = photo
 		textField.text = nil
 	}
 	
 	
 	@IBAction func emailButtonPressed(_ sender: UIButton) {
+		sender.animateButton()
 		sendEmail()
 	}
 	
@@ -153,16 +173,16 @@ class PostcardViewController: UIViewController {
 
 extension PostcardViewController: UICollectionViewDataSource {
 	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-		return ImageFilters.filters.count
+		return ImageInfo.filters.count
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "postcardCell", for: indexPath) as! PostcardCollectionViewCell
 		cell.imageView.image = photo
-		let filterTitle = ImageFilters.filters[indexPath.row].name.dropFirst(2)
+		let filterTitle = ImageInfo.filters[indexPath.row].name.dropFirst(2)
 		cell.label.text = "\(filterTitle)"
 		cell.activityIndicator.startAnimating()
-		currentFilter = ImageFilters.filters[indexPath.row]
+		currentFilter = ImageInfo.filters[indexPath.row]
 		applyProcessing(photoToProcess: cell.imageView)
 		cell.activityIndicator.stopAnimating()
 		return cell

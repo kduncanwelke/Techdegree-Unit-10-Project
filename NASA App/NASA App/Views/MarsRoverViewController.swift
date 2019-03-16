@@ -101,7 +101,7 @@ class MarsRoverViewController: UIViewController {
 		activityIndicator.startAnimating()
 		let url = UrlHandling.getURL(imageUrl: photo.imgSrc)
 		guard let urlToLoad = url else { return }
-		Nuke.loadImage(with: urlToLoad, into: image) { response, _ in
+		Nuke.loadImage(with: urlToLoad, options: ImageInfo.options, into: image) { response, _ in
 			self.image?.image = response?.image
 			self.activityIndicator.stopAnimating()
 		}
@@ -169,6 +169,8 @@ class MarsRoverViewController: UIViewController {
 	// MARK: IBActions
 	
 	@IBAction func randomizeButtonPressed(_ sender: UIButton) {
+		sender.animateButton()
+		
 		MarsSearch.marsSearch.sol = Int.random(in: 0...2200)
 		MarsSearch.marsSearch.rover = {
 			let randomRover = Int.random(in: 1...3)
@@ -193,11 +195,13 @@ class MarsRoverViewController: UIViewController {
 		}
 	}
 	
-	@IBAction func refineSearchButtonPressed(_ sender: Any) {
+	@IBAction func refineSearchButtonPressed(_ sender: UIButton) {
+		sender.animateButton()
 		performSegue(withIdentifier: "refineSearch", sender: Any?.self)
 	}
 	
 	@IBAction func postcardButtonPressed(_ sender: UIButton) {
+		sender.animateButton()
 		performSegue(withIdentifier: "makePostcard", sender: Any?.self)
 	}
 	
@@ -215,7 +219,7 @@ extension MarsRoverViewController: UICollectionViewDataSource {
 		
 		cell.cellActivityIndicator.startAnimating()
 		if let urlToLoad = url {
-			Nuke.loadImage(with: urlToLoad, into: cell.image) { response, _ in
+			Nuke.loadImage(with: urlToLoad, options: ImageInfo.options, into: cell.image) { response, _ in
 				cell.image?.image = response?.image
 				cell.cellActivityIndicator.stopAnimating()
 			}

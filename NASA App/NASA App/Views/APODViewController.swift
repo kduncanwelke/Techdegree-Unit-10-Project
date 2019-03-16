@@ -90,7 +90,7 @@ class APODViewController: UIViewController {
 			webview.isHidden = true
 			let url = UrlHandling.getURL(imageUrl: photo.url)
 			guard let urlToLoad = url else { return }
-			Nuke.loadImage(with: urlToLoad, into: image) { response, _ in
+			Nuke.loadImage(with: urlToLoad, options: ImageInfo.options, into: image) { response, _ in
 				self.image?.image = response?.image
 				self.activityIndicator.stopAnimating()
 			}
