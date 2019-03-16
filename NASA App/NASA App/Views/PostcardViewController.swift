@@ -75,13 +75,13 @@ class PostcardViewController: UIViewController {
 		}
 	}
 	
-	func textToImage(text: String, image: UIImage) -> UIImage {
+	func textToImage(text: String, imageToUse: UIImage) -> UIImage {
 		let scale = UIScreen.main.scale
-		UIGraphicsBeginImageContextWithOptions(image.size, false, scale)
+		UIGraphicsBeginImageContextWithOptions(imageToUse.size, false, scale)
 		
-		image.draw(in: CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height))
+		imageToUse.draw(in: CGRect(x: 0, y: 0, width: imageToUse.size.width, height: imageToUse.size.height))
 	
-		let fontScaling = max(0.05 * image.size.width, 3.0)
+		let fontScaling = 0.06 * imageToUse.size.height
 		if let font = UIFont(name: "Helvetica-Bold", size: fontScaling) {
 			let textStyle = NSMutableParagraphStyle()
 			textStyle.lineBreakMode = NSLineBreakMode.byWordWrapping
@@ -91,17 +91,17 @@ class PostcardViewController: UIViewController {
 			
 			// vertically center text
 			let textHeight = font.lineHeight
-			let textYPosition = (image.size.height / 2) - textHeight
-			let textRect = CGRect(x: 0, y: textYPosition, width: image.size.width, height: image.size.height)
+			let textYPosition = (imageToUse.size.height - textHeight) / 2
+			let textRect = CGRect(x: 0, y: textYPosition, width: imageToUse.size.width, height: imageToUse.size.height)
 			text.draw(in: textRect.integral, withAttributes: attributes)
 		}
 			
-			let roverFontScaling = max(0.02 * image.size.width, 3.0)
+			let roverFontScaling = 0.02 * imageToUse.size.height
 			if let roverFont = UIFont(name: "Helvetica-Bold", size: roverFontScaling) {
 				let textColor = UIColor.white
 				let textHeight = roverFont.lineHeight
 				let roverAttributes = [NSAttributedString.Key.font: roverFont, NSAttributedString.Key.paragraphStyle: NSMutableParagraphStyle(), NSAttributedString.Key.foregroundColor: textColor]
-				let roverInfoRect = CGRect(x: image.size.width / 10, y: (image.size.height / 4) - textHeight, width: image.size.width, height: image.size.height)
+				let roverInfoRect = CGRect(x: 0.05 * imageToUse.size.width, y: (0.25 * imageToUse.size.height) - textHeight, width: imageToUse.size.width, height: imageToUse.size.height)
 				
 				
 				if let name = roverName, let day = date {
@@ -150,7 +150,7 @@ class PostcardViewController: UIViewController {
 
 	@IBAction func applyTextButtonPressed(_ sender: UIButton) {
 		guard let imageToUse = image.image, let text = textField.text else { return }
-		let newImage = textToImage(text: text, image: imageToUse)
+		let newImage = textToImage(text: text, imageToUse: imageToUse)
 		
 		image.image = newImage
 		view.endEditing(true)
@@ -199,7 +199,7 @@ extension PostcardViewController: UICollectionViewDelegate {
 		} else {
 			guard let imageToUse = currentCell.imageView.image, let text = textField.text else { return }
 		
-			let newImage = textToImage(text: text, image: imageToUse)
+			let newImage = textToImage(text: text, imageToUse: imageToUse)
 			image.image = newImage
 		}
 	}
