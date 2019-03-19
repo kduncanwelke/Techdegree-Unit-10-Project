@@ -148,7 +148,17 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 			}
 		}
 	}
-
+	
+	// MARK: Navigation
+	
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+		if segue.destination is ZoomViewController {
+			let destinationViewController = segue.destination as? ZoomViewController
+			destinationViewController?.image = image.image
+		}
+	}
+	
+	
 	// MARK: IBActions
 	
 	@IBAction func mapTapped(_ sender: UITapGestureRecognizer) {
@@ -169,6 +179,10 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 		let contactPicker = CNContactPickerViewController()
 		contactPicker.delegate = self
 		self.present(contactPicker, animated: true, completion: nil)
+	}
+	
+	@IBAction func photoTapped(_ sender: UITapGestureRecognizer) {
+		performSegue(withIdentifier: "zoomEarth", sender: Any?.self)
 	}
 	
 }

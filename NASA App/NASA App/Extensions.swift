@@ -28,4 +28,10 @@ extension UIView {
 			}
 		})
 	}
+	
+	func fadeIn() {
+		UIView.animate(withDuration: 1.0, animations: {
+			self.alpha = 1.0
+		}, completion: nil)
+	}
 }

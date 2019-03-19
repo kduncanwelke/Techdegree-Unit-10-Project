@@ -52,7 +52,7 @@ class ViewController: UIViewController {
 		locationManager.delegate = self
 		locationManager.desiredAccuracy = kCLLocationAccuracyBest
 		locationManager.requestLocation()
-		
+
 		
 		dailyPhotoActivityIndicator.startAnimating()
 		DataManager<Daily>.fetch(with: nil) { result in
@@ -103,9 +103,20 @@ class ViewController: UIViewController {
 			}
 		}
 		
-		roverPhotoActivityIndicator.startAnimating()
 		getRandomMarsPhoto()
-		
+	}
+	
+	override func viewWillAppear(_ animated: Bool) {
+		self.navigationController?.setNavigationBarHidden(true, animated: false)
+	}
+	
+	override func viewWillDisappear(_ animated: Bool) {
+		self.navigationController?.setNavigationBarHidden(false, animated: false)
+	}
+	
+	// MARK: Custom functions
+	
+	func getEarthPhoto() {
 		earthPhotoActivityIndicator.startAnimating()
 		DataManager<Earth>.fetch(with: nil) { result in
 			switch result {
@@ -138,20 +149,10 @@ class ViewController: UIViewController {
 				}
 			}
 		}
-		
 	}
-	
-	override func viewWillAppear(_ animated: Bool) {
-		self.navigationController?.setNavigationBarHidden(true, animated: false)
-	}
-	
-	override func viewWillDisappear(_ animated: Bool) {
-		self.navigationController?.setNavigationBarHidden(false, animated: false)
-	}
-	
-	// MARK: Custom functions
 	
 	func getRandomMarsPhoto() {
+		roverPhotoActivityIndicator.startAnimating()
 		DataManager<Mars>.fetch(with: nil) { result in
 			switch result {
 			case .success(let response):
@@ -243,8 +244,9 @@ extension ViewController: CLLocationManagerDelegate {
 			EarthSearch.earthSearch.latitude = lat
 			EarthSearch.earthSearch.longitude = long
 			
+			getEarthPhoto()
+			
 			earthPhotoTitle.text = "\(lat), \(long)"
-
 		} else {
 			showAlert(title: "Geolocation failed", message: "Coordinates could not be found. Please check that location services are enabled.")
 		}

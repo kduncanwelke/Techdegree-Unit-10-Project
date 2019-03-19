@@ -21,6 +21,7 @@ class APODViewController: UIViewController {
 	@IBOutlet weak var explanationLabel: UILabel!
 	@IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 	
+	
 	// MARK: Variables
 	
 	let firstDate = Date()
@@ -128,6 +129,13 @@ class APODViewController: UIViewController {
 		}
 	}
 	
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+		if segue.destination is ZoomViewController {
+			let destinationViewController = segue.destination as? ZoomViewController
+			destinationViewController?.image = image.image
+		}
+	}
+	
 	// MARK: IBActions
 	
 	@IBAction func nextButtonPressed(_ sender: Any) {
@@ -158,6 +166,10 @@ class APODViewController: UIViewController {
 			DailyPhotoSearch.photoSearch.date = dateString
 			executeFetch()
 		}
+	}
+	
+	@IBAction func imageTapped(_ sender: UITapGestureRecognizer) {
+		performSegue(withIdentifier: "showPhoto", sender: Any?.self)
 	}
 	
 }

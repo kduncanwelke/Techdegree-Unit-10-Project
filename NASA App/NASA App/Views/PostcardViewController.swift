@@ -63,7 +63,6 @@ class PostcardViewController: UIViewController {
 	}
 	
 	func applyProcessing(photoToProcess: UIImageView) {
-		//currentFilter?.setValue(intensity.value, forKey: kCIInputIntensityKey)
 		guard let currentImage = photoToProcess.image else { return }
 		let imageToUse = CIImage(image: currentImage)
 		currentFilter?.setValue(imageToUse, forKey: kCIInputImageKey)

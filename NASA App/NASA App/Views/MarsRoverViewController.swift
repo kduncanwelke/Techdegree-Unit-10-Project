@@ -158,15 +158,19 @@ class MarsRoverViewController: UIViewController {
 			destinationViewController?.photo = image.image
 			destinationViewController?.roverName = roverTitle
 			destinationViewController?.date = date
+		} else if segue.destination is ZoomViewController {
+			let destinationViewController = segue.destination as? ZoomViewController
+			destinationViewController?.image = image.image
 		}
 	}
+	
+	// MARK: IBActions
 	
 	@IBAction func unwindToRover(segue: UIStoryboardSegue) {
 		marsPhotos.removeAll()
 		viewDidLoad()
 	}
-	
-	// MARK: IBActions
+
 	
 	@IBAction func randomizeButtonPressed(_ sender: UIButton) {
 		sender.animateButton()
@@ -205,7 +209,9 @@ class MarsRoverViewController: UIViewController {
 		performSegue(withIdentifier: "makePostcard", sender: Any?.self)
 	}
 	
-	
+	@IBAction func photoTapped(_ sender: UITapGestureRecognizer) {
+		performSegue(withIdentifier: "zoomPhoto", sender: Any?.self)
+	}
 }
 
 extension MarsRoverViewController: UICollectionViewDataSource {
