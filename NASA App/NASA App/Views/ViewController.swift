@@ -51,8 +51,8 @@ class ViewController: UIViewController {
 		
 		locationManager.delegate = self
 		locationManager.desiredAccuracy = kCLLocationAccuracyBest
-		locationManager.requestLocation()
-
+		//locationManager.requestLocation()
+		locationManager.startUpdatingLocation()
 		
 		dailyPhotoActivityIndicator.startAnimating()
 		DataManager<Daily>.fetch(with: nil) { result in
@@ -247,6 +247,8 @@ extension ViewController: CLLocationManagerDelegate {
 			getEarthPhoto()
 			
 			earthPhotoTitle.text = "\(lat), \(long)"
+			
+			locationManager.stopUpdatingLocation()
 		} else {
 			showAlert(title: "Geolocation failed", message: "Coordinates could not be found. Please check that location services are enabled.")
 		}
