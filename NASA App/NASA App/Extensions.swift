@@ -22,7 +22,7 @@ extension UIView {
 	func animateButton() {
 		UIView.animate(withDuration: 0.2, animations: {
 			self.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
-		}, completion: { _ in
+		}, completion: { [unowned self] _ in
 			UIView.animate(withDuration: 0.2) {
 			self.transform = CGAffineTransform.identity
 			}

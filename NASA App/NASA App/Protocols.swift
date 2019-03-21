@@ -10,6 +10,6 @@ import Foundation
 import MapKit
 
 // handle updating map location when locale is changed
-protocol MapUpdaterDelegate {
+protocol MapUpdaterDelegate: class {
 	func updateMapLocation(for: MKPlacemark)
 }

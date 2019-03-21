@@ -61,3 +61,19 @@ extension AppDelegate: CLLocationManagerDelegate {
 		print("Location updated")
 	}
 }
+
+
+/*
+
+*************************
+   Performance testing
+*************************
+
+- Used Allocations to detect reference cycles
+	- Checked memory graph hierarchy
+	- Checked Allocations statistics, found reference cycle
+		- EarthViewController and LocationSearchController were connected via an unnecessary delegate (removed delegate, problem solved)
+- Used Leaks, debug navigator, and malloc stack to detect memory leaks
+	- Found multiple instances of leaking due to references to self in closures
+	- Added unowned self to closures; most leaks disappeared, memory usage also dropped
+*/

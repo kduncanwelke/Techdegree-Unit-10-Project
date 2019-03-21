@@ -66,7 +66,7 @@ class MarsRoverViewController: UIViewController {
 	// MARK: Custom functions
 	
 	func loadData() {
-		DataManager<Mars>.fetch(with: currentPage) { result in
+		DataManager<Mars>.fetch(with: currentPage) { [unowned self] result in
 			switch result {
 			case .success(let response):
 				DispatchQueue.main.async {
@@ -101,7 +101,7 @@ class MarsRoverViewController: UIViewController {
 		activityIndicator.startAnimating()
 		let url = UrlHandling.getURL(imageUrl: photo.imgSrc)
 		guard let urlToLoad = url else { return }
-		Nuke.loadImage(with: urlToLoad, options: ImageInfo.options, into: image) { response, _ in
+		Nuke.loadImage(with: urlToLoad, options: ImageInfo.options, into: image) { [unowned self] response, _ in
 			self.image?.image = response?.image
 			self.activityIndicator.stopAnimating()
 		}
@@ -114,7 +114,7 @@ class MarsRoverViewController: UIViewController {
 	
 	func fetchMorePhotos() {
 		currentPage += 1
-		DataManager<Mars>.fetch(with: currentPage) { result in
+		DataManager<Mars>.fetch(with: currentPage) { [unowned self] result in
 			switch result {
 			case .success(let response):
 				DispatchQueue.main.async {
@@ -225,7 +225,7 @@ extension MarsRoverViewController: UICollectionViewDataSource {
 		
 		cell.cellActivityIndicator.startAnimating()
 		if let urlToLoad = url {
-			Nuke.loadImage(with: urlToLoad, options: ImageInfo.options, into: cell.image) { response, _ in
+			Nuke.loadImage(with: urlToLoad, options: ImageInfo.options, into: cell.image) { [unowned self] response, _ in
 				cell.image?.image = response?.image
 				cell.cellActivityIndicator.stopAnimating()
 			}

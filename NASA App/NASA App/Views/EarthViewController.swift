@@ -55,8 +55,6 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 		
 		// set up search bar
 		let resultsTableController = LocationSearchTableViewController()
-		
-		resultsTableController.tableView.delegate = resultsTableController
 		resultsTableController.mapView = mapView
 		resultsTableController.delegate = self
 		
@@ -77,7 +75,7 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 		navigationItem.hidesSearchBarWhenScrolling = false
 		definesPresentationContext = true
 	}
-	
+
 	
 	// MARK: Custom functions
 	
@@ -98,7 +96,7 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 			let locale = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
 			let geocoder = CLGeocoder()
 			
-			geocoder.reverseGeocodeLocation(locale, completionHandler: { (placemarks, error) in
+			geocoder.reverseGeocodeLocation(locale, completionHandler: { [unowned self] (placemarks, error) in
 				if error == nil {
 					guard let firstLocation = placemarks?[0] else { return }
 					annotation.title = LocationManager.parseAddress(selectedItem: firstLocation)
@@ -118,7 +116,7 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 		mapView.setRegion(region, animated: true)
 		
 		self.activityIndicator.startAnimating()
-		DataManager<Earth>.fetch(with: nil) { result in
+		DataManager<Earth>.fetch(with: nil) { [unowned self] result in
 			switch result {
 			case .success(let response):
 				DispatchQueue.main.async {
@@ -128,7 +126,7 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 					}
 					let url = UrlHandling.getURL(imageUrl: photo.url)
 					guard let urlToLoad = url else { return }
-					Nuke.loadImage(with: urlToLoad, options: ImageInfo.options, into: self.image) { response, _ in
+					Nuke.loadImage(with: urlToLoad, options: ImageInfo.options, into: self.image) { [unowned self] response, _ in
 						self.image?.image = response?.image
 						self.activityIndicator.stopAnimating()
 					}
@@ -204,7 +202,7 @@ extension EarthViewController: CLLocationManagerDelegate, MKMapViewDelegate {
 					let geocoder = CLGeocoder()
 					
 					// look up the location name
-					geocoder.reverseGeocodeLocation(lastLocation, completionHandler: { (placemarks, error) in
+					geocoder.reverseGeocodeLocation(lastLocation, completionHandler: { [unowned self] (placemarks, error) in
 						if error == nil {
 							guard let firstLocation = placemarks?[0] else { return }
 							self.locationLabel.text = LocationManager.parseAddress(selectedItem: firstLocation)
@@ -246,7 +244,7 @@ extension EarthViewController: CNContactPickerDelegate {
 		locationFromMapTap = false
 		
 		let geocoder = CLGeocoder()
-		geocoder.geocodePostalAddress(address) { (placemarks, error) in
+		geocoder.geocodePostalAddress(address) { [unowned self] (placemarks, error) in
 			if error == nil {
 				guard let placemark = placemarks?[0], let location = placemark.location else { return }
 					let locale = MKPlacemark(coordinate: location.coordinate, postalAddress: address)

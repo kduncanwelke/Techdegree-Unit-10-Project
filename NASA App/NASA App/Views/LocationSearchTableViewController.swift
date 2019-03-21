@@ -15,7 +15,7 @@ class LocationSearchTableViewController: UITableViewController {
 	var resultsList: [MKMapItem] = [MKMapItem]()
 	var mapView: MKMapView? = nil
 	
-	var delegate: MapUpdaterDelegate?
+	weak var delegate: MapUpdaterDelegate?
 	
 	override func viewDidLoad() {
 		self.tableView.delegate = self
@@ -65,7 +65,7 @@ extension LocationSearchTableViewController: UISearchResultsUpdating {
 		request.region = mapView.region
 		let search = MKLocalSearch(request: request)
 		
-		search.start { response, _ in
+		search.start { [unowned self] response, _ in
 			guard let response = response else {
 				return
 			}

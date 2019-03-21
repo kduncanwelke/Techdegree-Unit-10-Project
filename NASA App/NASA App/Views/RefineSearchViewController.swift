@@ -56,7 +56,7 @@ class RefineSearchViewController: UIViewController {
 		MarsSearch.marsSearch.earthDate = nil
 		MarsSearch.solDate = 1000
 		
-		DataManager<Mars>.fetch(with: nil) { result in
+		DataManager<Mars>.fetch(with: nil) { [unowned self] result in
 			switch result {
 			case .success(let response):
 				DispatchQueue.main.async {

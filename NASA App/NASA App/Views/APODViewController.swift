@@ -91,7 +91,7 @@ class APODViewController: UIViewController {
 			webview.isHidden = true
 			let url = UrlHandling.getURL(imageUrl: photo.url)
 			guard let urlToLoad = url else { return }
-			Nuke.loadImage(with: urlToLoad, options: ImageInfo.options, into: image) { response, _ in
+			Nuke.loadImage(with: urlToLoad, options: ImageInfo.options, into: image) { [unowned self] response, _ in
 				self.image?.image = response?.image
 				self.activityIndicator.stopAnimating()
 			}
@@ -103,7 +103,7 @@ class APODViewController: UIViewController {
 	
 	func executeFetch() {
 		self.activityIndicator.startAnimating()
-		DataManager<Daily>.fetch(with: nil) { result in
+		DataManager<Daily>.fetch(with: nil) { [unowned self] result in
 			switch result {
 			case .success(let response):
 				DispatchQueue.main.async {

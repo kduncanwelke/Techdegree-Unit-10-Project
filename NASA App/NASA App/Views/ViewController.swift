@@ -26,7 +26,6 @@ class ViewController: UIViewController {
 	@IBOutlet weak var containerView: UIView!
 	@IBOutlet weak var webview: WKWebView!
 	
-	
 	@IBOutlet weak var dailyPhotoActivityIndicator: UIActivityIndicatorView!
 	@IBOutlet weak var roverPhotoActivityIndicator: UIActivityIndicatorView!
 	@IBOutlet weak var earthPhotoActivityIndicator: UIActivityIndicatorView!
@@ -55,7 +54,7 @@ class ViewController: UIViewController {
 		locationManager.startUpdatingLocation()
 		
 		dailyPhotoActivityIndicator.startAnimating()
-		DataManager<Daily>.fetch(with: nil) { result in
+		DataManager<Daily>.fetch(with: nil) { [unowned self] result in
 			switch result {
 			case .success(let response):
 				DispatchQueue.main.async {
@@ -80,7 +79,7 @@ class ViewController: UIViewController {
 						self.currentDaily = photo
 						let url = UrlHandling.getURL(imageUrl: photo.url)
 						guard let urlToLoad = url else { return }
-						Nuke.loadImage(with: urlToLoad, options: ImageInfo.options, into: self.dailyPhoto) { response, _ in
+						Nuke.loadImage(with: urlToLoad, options: ImageInfo.options, into: self.dailyPhoto) { [unowned self] response, _ in
 							self.dailyPhoto?.image = response?.image
 							self.dailyPhotoActivityIndicator.stopAnimating()
 						}
@@ -118,7 +117,7 @@ class ViewController: UIViewController {
 	
 	func getEarthPhoto() {
 		earthPhotoActivityIndicator.startAnimating()
-		DataManager<Earth>.fetch(with: nil) { result in
+		DataManager<Earth>.fetch(with: nil) { [unowned self] result in
 			switch result {
 			case .success(let response):
 				DispatchQueue.main.async {
@@ -129,7 +128,7 @@ class ViewController: UIViewController {
 					self.currentEarth = photo
 					let url =  UrlHandling.getURL(imageUrl: photo.url)
 					guard let urlToLoad = url else { return }
-					Nuke.loadImage(with: urlToLoad, options: ImageInfo.options, into: self.earthPhoto) { response, _ in
+					Nuke.loadImage(with: urlToLoad, options: ImageInfo.options, into: self.earthPhoto) { [unowned self] response, _ in
 						self.earthPhoto?.image = response?.image
 						self.earthPhotoActivityIndicator.stopAnimating()
 					}
@@ -153,7 +152,7 @@ class ViewController: UIViewController {
 	
 	func getRandomMarsPhoto() {
 		roverPhotoActivityIndicator.startAnimating()
-		DataManager<Mars>.fetch(with: nil) { result in
+		DataManager<Mars>.fetch(with: nil) { [unowned self] result in
 			switch result {
 			case .success(let response):
 				DispatchQueue.main.async {
@@ -168,7 +167,7 @@ class ViewController: UIViewController {
 					self.currentRover = response.first
 					let url =  UrlHandling.getURL(imageUrl: image)
 					guard let urlToLoad = url else { return }
-					Nuke.loadImage(with: urlToLoad, options: ImageInfo.options, into: self.roverPhoto) { response, _ in
+					Nuke.loadImage(with: urlToLoad, options: ImageInfo.options, into: self.roverPhoto) { [unowned self] response, _ in
 						self.roverPhoto?.image = response?.image
 						self.roverPhotoActivityIndicator.stopAnimating()
 					}
