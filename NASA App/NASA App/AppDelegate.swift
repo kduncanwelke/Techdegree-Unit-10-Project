@@ -76,4 +76,5 @@ extension AppDelegate: CLLocationManagerDelegate {
 - Used Leaks, debug navigator, and malloc stack to detect memory leaks
 	- Found multiple instances of leaking due to references to self in closures
 	- Added unowned self to closures; most leaks disappeared, memory usage also dropped
+	- Remaining leaks that still show up are caused by a bug in WKWebView
 */

@@ -368,7 +368,7 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="marsCell" id="5Wq-ji-tXQ" customClass="MarsCollectionViewCell" customModule="NASA_App" customModuleProvider="target">
+                                    <collectionViewCell clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="marsCell" id="5Wq-ji-tXQ" customClass="MarsCollectionViewCell" customModule="NASA_App" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="14" width="100" height="100"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
@@ -697,7 +697,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="73r-fY-L6z" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="cjH-ds-tj5" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="2562" y="788"/>
+            <point key="canvasLocation" x="2561" y="878"/>
         </scene>
         <!--Mars Rover Postcard Creator-->
         <scene sceneID="5S2-OG-Vyl">
@@ -719,9 +719,13 @@
                             </navigationBar>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="BeN-Jl-deO">
                                 <rect key="frame" x="0.0" y="64" width="375" height="226.5"/>
+                                <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="BeN-Jl-deO" secondAttribute="height" multiplier="207:125" id="kuf-H0-xcM"/>
                                 </constraints>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="QGF-4L-XxR" appends="YES" id="kE1-q1-QOl"/>
+                                </connections>
                             </imageView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="hk0-ZM-G2j">
                                 <rect key="frame" x="0.0" y="301.5" width="375" height="128"/>
@@ -735,7 +739,7 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="postcardCell" id="eHq-gV-7d2" customClass="PostcardCollectionViewCell" customModule="NASA_App" customModuleProvider="target">
+                                    <collectionViewCell clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="postcardCell" id="eHq-gV-7d2" customClass="PostcardCollectionViewCell" customModule="NASA_App" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="4" width="100" height="120"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
@@ -853,11 +857,17 @@
                         <outlet property="image" destination="BeN-Jl-deO" id="ifq-41-p2f"/>
                         <outlet property="resetButton" destination="m3S-gE-uXZ" id="m17-DR-3Os"/>
                         <outlet property="textField" destination="PIH-dW-dgU" id="RhV-Hc-mxT"/>
+                        <segue destination="1uH-Fa-c4j" kind="presentation" identifier="postcardPreview" id="e6e-10-0Ie"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jqg-6P-BsO" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="QGF-4L-XxR">
+                    <connections>
+                        <action selector="imageTapped:" destination="oQ5-K6-g7M" id="9GG-fQ-BqD"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="3313" y="788"/>
+            <point key="canvasLocation" x="3313" y="878"/>
         </scene>
         <!--Earth Photo Viewer-->
         <scene sceneID="jz3-X8-NkY">
@@ -1036,6 +1046,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="0sX-QN-lMj"/>
+        <segue reference="e6e-10-0Ie"/>
     </inferredMetricsTieBreakers>
 </document>

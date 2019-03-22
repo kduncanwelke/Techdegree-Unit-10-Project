@@ -131,15 +131,15 @@ class PostcardViewController: UIViewController {
 		}
 	}
 
-    /*
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+		if segue.destination is ZoomViewController {
+			let destinationViewController = segue.destination as? ZoomViewController
+			destinationViewController?.image = image.image
+		}
     }
-    */
 	
 	// MARK: IBActions
 	
@@ -167,6 +167,11 @@ class PostcardViewController: UIViewController {
 		sender.animateButton()
 		sendEmail()
 	}
+	
+	@IBAction func imageTapped(_ sender: UITapGestureRecognizer) {
+		performSegue(withIdentifier: "postcardPreview", sender: Any?.self)
+	}
+	
 	
 }
 

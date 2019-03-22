@@ -9,17 +9,12 @@
 import XCTest
 @testable import NASA_App
 import CoreLocation
-
-protocol LocationManager {
-	var location:CLLocation? {get}
-}
-
-extension CLLocationManager: LocationManager{}
+import MapKit
 
 class NASA_AppTests: XCTestCase {
 	
-	
 	var testSession: URLSession!
+	
 
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -113,33 +108,50 @@ class NASA_AppTests: XCTestCase {
 		XCTAssertNotNil(marsPhotos)
 	}
 
-	func testLocationAcquisition() {
-		let promise = expectation(description: "Latitude and longitude successfully acquired")
-		var latitude: Double?
-		var longitude: Double?
+	func testGeocoding() {
+		let promise = expectation(description: "Location successfully acquired from coordinates")
+		var location: String?
 		var responseError: Error?
 		
-		class MockLocationManager: LocationManager {
-			var location: CLLocation? = CLLocation(latitude: 37.787359, longitude: 122.408227)
-		}
+		let locale = CLLocation(latitude: 37.787359, longitude: -122.408227)
+		let geocoder = CLGeocoder()
 		
-		func locationManager(_ manager: MockLocationManager, didUpdateLocations locations: [CLLocation]) {
-			if let lat = locations.last?.coordinate.latitude, let long = locations.last?.coordinate.longitude, let location = locations.last {
-				latitude = lat
-				longitude = long
+		geocoder.reverseGeocodeLocation(locale, completionHandler: { (placemarks, error) in
+			if error == nil {
+				guard let firstLocation = placemarks?[0] else { return }
+				location = LocationManager.parseAddress(selectedItem: firstLocation)
 				promise.fulfill()
 			}
-		}
+			else {
+				responseError = error
+			}
+		})
 		
-		func locationManager(_ manager: MockLocationManager, didFailWithError error: Error) {
-			responseError = error
-		}
-		
-		
-		waitForExpectations(timeout: 60, handler: nil)
+		waitForExpectations(timeout: 5, handler: nil)
 		XCTAssertNil(responseError)
-		XCTAssertNotNil(latitude)
-		XCTAssertNotNil(longitude)
+		XCTAssertNotNil(location)
+	}
+	
+	func testForSearchResults() {
+		let promise = expectation(description: "Search yields a body of results")
+		
+		var results: MKLocalSearch.Response?
+		let searchText = "starbucks"
+		
+		let request = MKLocalSearch.Request()
+		request.naturalLanguageQuery = searchText
+		let search = MKLocalSearch(request: request)
+		
+		search.start { response, _ in
+			guard let response = response else {
+				return
+			}
+			results = response
+			promise.fulfill()
+		}
+		
+		waitForExpectations(timeout: 5, handler: nil)
+		XCTAssertNotNil(results)
 	}
 
 

@@ -71,7 +71,6 @@ class MarsRoverViewController: UIViewController {
 			case .success(let response):
 				DispatchQueue.main.async {
 					guard let response = response.first?.photos, let first = response.first else {
-						//self.showAlert(title: "Connection failed", message: "Json response failed, please try again later.")
 						MarsSearch.marsSearch.sol = Int.random(in: 0...2200)
 						print("re-randomized results")
 						self.loadData()
@@ -142,16 +141,10 @@ class MarsRoverViewController: UIViewController {
 		}
 	}
 
-    /*
+	
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		if segue.destination is PostcardViewController {
 			let destinationViewController = segue.destination as? PostcardViewController
@@ -163,6 +156,7 @@ class MarsRoverViewController: UIViewController {
 			destinationViewController?.image = image.image
 		}
 	}
+	
 	
 	// MARK: IBActions
 	

@@ -45,7 +45,6 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 		importButton.layer.cornerRadius = 10
 		
 		locationManager.desiredAccuracy = kCLLocationAccuracyBest
-		locationManager.requestLocation()
 		locationManager.startUpdatingLocation()
 		
 		image.image = photo
@@ -75,7 +74,6 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 		navigationItem.hidesSearchBarWhenScrolling = false
 		definesPresentationContext = true
 	}
-
 	
 	// MARK: Custom functions
 	
@@ -192,6 +190,7 @@ extension EarthViewController: CLLocationManagerDelegate, MKMapViewDelegate {
 		// only show location on map if no location was chosen
 		if usingCurrentLocation {
 			if let lat = locations.last?.coordinate.latitude, let long = locations.last?.coordinate.longitude, let location = locations.last {
+				locationManager.stopUpdatingLocation()
 				print("current location: \(lat) \(long)")
 				let regionRadius: CLLocationDistance = 1000
 				
@@ -213,6 +212,7 @@ extension EarthViewController: CLLocationManagerDelegate, MKMapViewDelegate {
 						}
 					})
 				} else {
+					locationManager.stopUpdatingLocation()
 					showAlert(title: "Geolocation failed", message: "Coordinates could not be found. Please check that location services are enabled.")
 				}
 			}
