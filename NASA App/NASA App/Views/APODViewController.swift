@@ -20,6 +20,7 @@ class APODViewController: UIViewController {
 	@IBOutlet weak var dateLabel: UILabel!
 	@IBOutlet weak var explanationLabel: UILabel!
 	@IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+	@IBOutlet weak var webActivityIndicator: UIActivityIndicatorView!
 	
 	
 	// MARK: Variables
@@ -41,6 +42,8 @@ class APODViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+		dateFormatter.dateFormat = "yyyy-MM-dd"
+		
 		guard let currentPhoto = dailyPhoto else { return }
 		titleLabel.text = currentPhoto.title
 		dateLabel.text = currentPhoto.date
@@ -56,10 +59,6 @@ class APODViewController: UIViewController {
 			webview.isHidden = true
 			image.image = photo
 		}
-	
-		self.activityIndicator.hidesWhenStopped = true
-		
-		image.addSubview(self.activityIndicator)
     }
     
 
@@ -77,6 +76,8 @@ class APODViewController: UIViewController {
 	
 	func updateUI(for photo: Daily) {
 		if photo.mediaType == "video" {
+			activityIndicator.stopAnimating()
+			webActivityIndicator.startAnimating()
 			isVideo = true
 			image.isHidden = true
 			webview.isHidden = false
@@ -84,7 +85,7 @@ class APODViewController: UIViewController {
 			let request = URLRequest(url: url)
 			self.videoURL = request
 			self.webview?.load(request)
-			self.activityIndicator.stopAnimating()
+			webActivityIndicator.stopAnimating()
 		} else {
 			isVideo = false
 			image.isHidden = false
@@ -129,6 +130,16 @@ class APODViewController: UIViewController {
 		}
 	}
 	
+	func getDate(date: Date?) {
+		guard let dateToStringify = date else { return }
+		let dateString = dateFormatter.string(from: dateToStringify)
+		print(dateString)
+		currentDateDisplayed = dateToStringify
+		
+		DailyPhotoSearch.photoSearch.date = dateString
+		executeFetch()
+	}
+	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		if segue.destination is ZoomViewController {
 			let destinationViewController = segue.destination as? ZoomViewController
@@ -140,16 +151,12 @@ class APODViewController: UIViewController {
 	
 	@IBAction func nextButtonPressed(_ sender: Any) {
 		let previousDay = Calendar.current.date(byAdding: .day, value: -1, to: currentDateDisplayed)
-		guard let dateToStringify = previousDay else { return }
-		dateFormatter.dateFormat = "yyyy-MM-dd"
-		let dateString = dateFormatter.string(from: dateToStringify)
-		print(dateString)
-		currentDateDisplayed = dateToStringify
-		
-		DailyPhotoSearch.photoSearch.date = dateString
-		executeFetch()
+		getDate(date: previousDay)
 	}
 	
+	@IBAction func searchButtonPressed(_ sender: Any) {
+		performSegue(withIdentifier: "searchByDate", sender: Any?.self)
+	}
 
 	@IBAction func backButtonPressed(_ sender: Any) {
 		if currentDateDisplayed == firstDate {
@@ -157,19 +164,16 @@ class APODViewController: UIViewController {
 			return
 		} else {
 			let soonerDay = Calendar.current.date(byAdding: .day, value: 1, to: currentDateDisplayed)
-			guard let dateToStringify = soonerDay else { return }
-			dateFormatter.dateFormat = "yyyy-MM-dd"
-			let dateString = dateFormatter.string(from: dateToStringify)
-			print(dateString)
-			currentDateDisplayed = dateToStringify
-			
-			DailyPhotoSearch.photoSearch.date = dateString
-			executeFetch()
+			getDate(date: soonerDay)
 		}
 	}
 	
 	@IBAction func imageTapped(_ sender: UITapGestureRecognizer) {
 		performSegue(withIdentifier: "showPhoto", sender: Any?.self)
+	}
+	
+	@IBAction func unwindToAPOD(segue: UIStoryboardSegue) {
+		executeFetch()
 	}
 	
 }

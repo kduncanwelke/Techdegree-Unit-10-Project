@@ -41,12 +41,13 @@ class PostcardViewController: UIViewController {
 		emailButton.layer.cornerRadius = 10
 		
 		image.image = photo
-		
+	
 		applyProcessing(photoToProcess: image)
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
+	
 	
 	@objc func keyboardWillShow(notification: NSNotification) {
 		if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
@@ -100,7 +101,7 @@ class PostcardViewController: UIViewController {
 				let textColor = UIColor.white
 				let textHeight = roverFont.lineHeight
 				let roverAttributes = [NSAttributedString.Key.font: roverFont, NSAttributedString.Key.paragraphStyle: NSMutableParagraphStyle(), NSAttributedString.Key.foregroundColor: textColor]
-				let roverInfoRect = CGRect(x: 0.05 * imageToUse.size.width, y: (0.25 * imageToUse.size.height) - textHeight, width: imageToUse.size.width, height: imageToUse.size.height)
+				let roverInfoRect = CGRect(x: 0.05 * imageToUse.size.width, y: (0.05 * imageToUse.size.height) - textHeight, width: imageToUse.size.width, height: imageToUse.size.height)
 				
 				
 				if let name = roverName, let day = date {
@@ -170,6 +171,7 @@ class PostcardViewController: UIViewController {
 	
 	@IBAction func imageTapped(_ sender: UITapGestureRecognizer) {
 		performSegue(withIdentifier: "postcardPreview", sender: Any?.self)
+		print("segue triggered")
 	}
 	
 	
@@ -208,6 +210,7 @@ extension PostcardViewController: UICollectionViewDelegate {
 		}
 	}
 }
+
 
 extension PostcardViewController: MFMailComposeViewControllerDelegate {
 	func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
