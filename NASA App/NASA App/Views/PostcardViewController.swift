@@ -46,19 +46,18 @@ class PostcardViewController: UIViewController {
 		
 		image.image = photo
 		
+		// create array of ImageInfo objects based on the number of filters that will be applied
 		for _ in ImageInfo.filters {
 			let imageToFilter = PhotoInfo()
 			imageToFilter.image = photo
 			photos.append(imageToFilter)
 		}
 
-		//applyProcessing(photoToProcess: image)
-		
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 	
-	
+	// deal with screen display when keyboard is used
 	@objc func keyboardWillShow(notification: NSNotification) {
 		if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
 			if self.view.frame.origin.y == 0 {
@@ -73,6 +72,7 @@ class PostcardViewController: UIViewController {
 		}
 	}
 	
+	// use operations to apply filtering to a given image
 	func startFiltration(for photo: PhotoInfo, at indexPath: IndexPath) {
 		guard pendingOperations.filteringInProgress[indexPath] == nil else {
 			return
@@ -95,7 +95,7 @@ class PostcardViewController: UIViewController {
 		pendingOperations.filtrationQueue.addOperation(filterer)
 	}
 	
-	
+	// handle starting operations is given PhotoInfo object is in placeholder state
 	func startOperations(for photo: PhotoInfo, at indexPath: IndexPath) {
 		switch (photo.state) {
 		case .placeholder:
@@ -104,27 +104,19 @@ class PostcardViewController: UIViewController {
 			return
 		}
 	}
-	/*
-	func applyProcessing(photoToProcess: UIImageView) {
-		guard let currentImage = photoToProcess.image else { return }
-		let imageToUse = CIImage(image: currentImage)
-		currentFilter?.setValue(imageToUse, forKey: kCIInputImageKey)
-		
-		guard let filter = currentFilter, let output = filter.outputImage else { return }
-		if let cgImage = context.createCGImage(output, from: output.extent) {
-			let processedImage = UIImage(cgImage: cgImage)
-			photoToProcess.image = processedImage
-		}
-	}*/
 	
+	// apply text onto image
 	func textToImage(text: String, imageToUse: UIImage) -> UIImage {
 		let scale = UIScreen.main.scale
+		// start graphics context
 		UIGraphicsBeginImageContextWithOptions(imageToUse.size, false, scale)
 		
 		imageToUse.draw(in: CGRect(x: 0, y: 0, width: imageToUse.size.width, height: imageToUse.size.height))
 	
+		// set font scale and position for entered based on image size to ensure consistency
 		let fontScaling = 0.06 * imageToUse.size.height
 		if let font = UIFont(name: "Helvetica-Bold", size: fontScaling) {
+			// set paragraph style attributes
 			let textStyle = NSMutableParagraphStyle()
 			textStyle.lineBreakMode = NSLineBreakMode.byWordWrapping
 			textStyle.alignment = NSTextAlignment.center
@@ -135,9 +127,12 @@ class PostcardViewController: UIViewController {
 			let textHeight = font.lineHeight
 			let textYPosition = (imageToUse.size.height - textHeight) / 2
 			let textRect = CGRect(x: 0, y: textYPosition, width: imageToUse.size.width, height: imageToUse.size.height)
+			
+			// finally draw text on image
 			text.draw(in: textRect.integral, withAttributes: attributes)
 		}
-			
+		
+		// set font scale and position for rover name and photo date text
 			let roverFontScaling = 0.02 * imageToUse.size.height
 			if let roverFont = UIFont(name: "Helvetica-Bold", size: roverFontScaling) {
 				let textColor = UIColor.white
@@ -145,29 +140,44 @@ class PostcardViewController: UIViewController {
 				let roverAttributes = [NSAttributedString.Key.font: roverFont, NSAttributedString.Key.paragraphStyle: NSMutableParagraphStyle(), NSAttributedString.Key.foregroundColor: textColor]
 				let roverInfoRect = CGRect(x: 0.05 * imageToUse.size.width, y: (0.05 * imageToUse.size.height) - textHeight, width: imageToUse.size.width, height: imageToUse.size.height)
 				
-				
+				// get rover name and date
 				if let name = roverName, let day = date {
 					let roverInfoString = "\(name), \(day)"
+					
+					// draw text on image
 					roverInfoString.draw(in: roverInfoRect.integral, withAttributes: roverAttributes)
 				}
 			}
 
+			// generate new image
 			let newImage = UIGraphicsGetImageFromCurrentImageContext()
+		
+			// end graphics context
 			UIGraphicsEndImageContext()
 			
 			return newImage!
 		}
 	
+	// function to send email
 	func sendEmail() {
 		if MFMailComposeViewController.canSendMail() {
 			let mail = MFMailComposeViewController()
 			mail.mailComposeDelegate = self
+			
+			// ********** set email address here **********
 			mail.setToRecipients(["darkhorse357@gmail.com"])
+			
 			mail.setSubject("Mars Rover Postcard")
 			mail.setMessageBody("Image from NASA app", isHTML: false)
 			guard let currentImage = image.image else { return }
+			
+			// turn image into data
 			guard let imageData: Data = currentImage.pngData() else { return }
+			
+			// attach image to email
 			mail.addAttachmentData(imageData, mimeType: "image/png", fileName: "RoverPhoto.png")
+			
+			// open email view
 			present(mail, animated: true, completion: nil)
 		} else {
 			showAlert(title: "Email not available", message: "This device is not set up to send mail")
@@ -176,7 +186,7 @@ class PostcardViewController: UIViewController {
 
     // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    // segue to view where user can zoom on image
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		if segue.destination is ZoomViewController {
 			let destinationViewController = segue.destination as? ZoomViewController
@@ -190,6 +200,7 @@ class PostcardViewController: UIViewController {
 		self.dismiss(animated: true, completion: nil)
 	}
 
+	// when text is entered into text field and applied, add to image
 	@IBAction func applyTextButtonPressed(_ sender: UIButton) {
 		guard let imageToUse = image.image, let text = textField.text else { return }
 		let newImage = textToImage(text: text, imageToUse: imageToUse)
@@ -198,14 +209,14 @@ class PostcardViewController: UIViewController {
 		view.endEditing(true)
 	}
 	
-	
+	// reset all selections (this includes removing filter)
 	@IBAction func resetButtonTapped(_ sender: UIButton) {
 		sender.animateButton()
 		image.image = photo
 		textField.text = nil
 	}
 	
-	
+	// email current image
 	@IBAction func emailButtonPressed(_ sender: UIButton) {
 		sender.animateButton()
 		sendEmail()
@@ -213,38 +224,40 @@ class PostcardViewController: UIViewController {
 	
 	@IBAction func imageTapped(_ sender: UITapGestureRecognizer) {
 		performSegue(withIdentifier: "postcardPreview", sender: Any?.self)
-		print("segue triggered")
 	}
-
-	
 }
+
 
 extension PostcardViewController: UICollectionViewDataSource {
 	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+		// show enough collection view cell to match number of filters
 		return ImageInfo.filters.count
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "postcardCell", for: indexPath) as! PostcardCollectionViewCell
 		
+		// photos will be from array of PhotoInfo objects created earlier
 		let photoForCell = photos[indexPath.row]
+		
+		// set filter based on indexpath
 		currentFilter = ImageInfo.filters[indexPath.row]
 	
+		// set title based on filter name
 		let filterTitle = ImageInfo.filters[indexPath.row].name.dropFirst(2)
 		cell.label.text = "\(filterTitle)"
 		
+		// switch on PhotoInfo item state, show placeholder if image needs filtering and start operations
 		switch (photoForCell.state) {
 		case .placeholder:
 			cell.imageView.image = UIImage(named: "placeholder")
 			cell.activityIndicator.startAnimating()
 			startOperations(for: photoForCell, at: indexPath)
 		case .filtered:
+			// once image has been filtered show in cell and stop indicator
 			cell.imageView.image = photoForCell.image
 			cell.activityIndicator.stopAnimating()
 		}
-		
-		//currentFilter = ImageInfo.filters[indexPath.row]
-		//applyProcessing(photoToProcess: cell.imageView)
 		
 		return cell
 	}
@@ -259,13 +272,12 @@ extension PostcardViewController: UICollectionViewDelegate {
 			image.image = currentCell.imageView.image
 		} else {
 			guard let imageToUse = currentCell.imageView.image, let text = textField.text else { return }
-		
+			
+			// return newly created image with text
 			let newImage = textToImage(text: text, imageToUse: imageToUse)
 			image.image = newImage
 		}
 	}
-}
-
 
 extension PostcardViewController: MFMailComposeViewControllerDelegate {
 	func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {

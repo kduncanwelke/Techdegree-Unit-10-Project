@@ -15,11 +15,13 @@ enum PhotoState {
 	case filtered
 }
 
+// object to be used to handle photos and filtering
 class PhotoInfo {
 	var state = PhotoState.placeholder
 	var image = UIImage(named: "placeholder")
 }
 
+// management for operations used by filtering process
 class PendingOperations {
 	lazy var filteringInProgress: [IndexPath: Operation] = [:]
 	lazy var filtrationQueue: OperationQueue = {
@@ -38,11 +40,13 @@ class ImageFiltration: Operation {
 		self.filter = filter
 	}
 	
+	// check if process has been cancelled
 	override func main() {
 		if isCancelled {
 			return
 		}
 		
+		// apply given filter to given image and return filtered image
 		func applyProcessing(photoToProcess: UIImage, filter: CIFilter) -> UIImage? {
 			let imageToUse = CIImage(image: photoToProcess)
 			
@@ -50,15 +54,18 @@ class ImageFiltration: Operation {
 				return nil
 			}
 			
+			// set filter
 			let currentFilter = filter
 			currentFilter.setValue(imageToUse, forKey: kCIInputImageKey)
 			
+			// create context
 			let context = CIContext()
 			
 			if isCancelled {
 				return nil
 			}
 			
+			// create filtered image and return it
 			guard let output = currentFilter.outputImage else { return nil }
 			if let cgImage = context.createCGImage(output, from: output.extent) {
 				let processedImage = UIImage(cgImage: cgImage)
@@ -69,6 +76,7 @@ class ImageFiltration: Operation {
 			}
 		}
 		
+		// assign filtered image to PhotoInfo object and set state to filtered
 		if let image = photoInfo.image, let filteredImage = applyProcessing(photoToProcess: image, filter: filter) {
 			photoInfo.image = filteredImage
 			photoInfo.state = .filtered

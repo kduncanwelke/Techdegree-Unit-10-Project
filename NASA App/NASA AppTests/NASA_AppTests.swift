@@ -15,7 +15,6 @@ class NASA_AppTests: XCTestCase {
 	
 	var testSession: URLSession!
 	
-
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.
 		super.setUp()
@@ -28,10 +27,8 @@ class NASA_AppTests: XCTestCase {
 		super.tearDown()
     }
 
+	// test that session returns a 200 results
     func testFor200Code() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-		
 		let promise = expectation(description: "Status code: 200")
 		let url = URL(string: "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY")
 		var statusCode: Int?
@@ -48,6 +45,7 @@ class NASA_AppTests: XCTestCase {
 		XCTAssertEqual(statusCode, 200)
     }
 	
+	// test that networking successfully returns a daily photo (aka APOD) item
 	func testDailyPhotoParsing() {
 		let promise = expectation(description: "Daily item returned")
 		var dailyPhoto: Daily?
@@ -68,6 +66,7 @@ class NASA_AppTests: XCTestCase {
 		XCTAssertNotNil(dailyPhoto)
 	}
 	
+	// test that networking successfully returns an earth satellite item
 	func testEarthParsing() {
 		let promise = expectation(description: "Earth item returned")
 		var earthPhoto: Earth?
@@ -88,6 +87,7 @@ class NASA_AppTests: XCTestCase {
 		XCTAssertNotNil(earthPhoto)
 	}
 	
+	// test that networking successfully returns a mars rover photo response
 	func testMarsParsing() {
 		let promise = expectation(description: "Mars item returned")
 		var marsPhotos: [Mars]?
@@ -108,6 +108,7 @@ class NASA_AppTests: XCTestCase {
 		XCTAssertNotNil(marsPhotos)
 	}
 
+	// test that geocoding returns a location based on coordinates
 	func testGeocoding() {
 		let promise = expectation(description: "Location successfully acquired from coordinates")
 		var location: String?
@@ -132,6 +133,7 @@ class NASA_AppTests: XCTestCase {
 		XCTAssertNotNil(location)
 	}
 	
+	// test that search used in earth satellite imagery search table works
 	func testForSearchResults() {
 		let promise = expectation(description: "Search yields a body of results")
 		
@@ -154,6 +156,32 @@ class NASA_AppTests: XCTestCase {
 		XCTAssertNotNil(results)
 	}
 
+	// test that a location is always available
+	func testForLocationRetrieval() {
+		let promise = expectation(description: "Earth item returns a latitude and longitude")
+		var latitude: Double?
+		var longitude: Double?
+		var responseError: Error?
+		
+		// this should always return values because defaults are set in earthsearch
+		DataManager<Earth>.fetch(with: nil) { result in
+			switch result {
+			case .success(let _):
+				latitude = EarthSearch.earthSearch.latitude
+				longitude = EarthSearch.earthSearch.longitude
+				promise.fulfill()
+			case .failure(let error):
+				latitude = EarthSearch.earthSearch.latitude
+				longitude = EarthSearch.earthSearch.longitude
+				responseError = error
+			}
+		}
+		
+		waitForExpectations(timeout: 5, handler: nil)
+		XCTAssertNil(responseError)
+		XCTAssertNotNil(latitude)
+		XCTAssertNotNil(longitude)
+	}
 
     func testPerformanceExample() {
         // This is an example of a performance test case.
