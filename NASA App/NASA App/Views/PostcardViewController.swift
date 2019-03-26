@@ -32,7 +32,7 @@ class PostcardViewController: UIViewController {
 
 	var photos: [PhotoInfo] = []
 	let pendingOperations = PendingOperations()
-	let imageToFilter = PhotoInfo()
+	
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,10 +45,10 @@ class PostcardViewController: UIViewController {
 		emailButton.layer.cornerRadius = 10
 		
 		image.image = photo
-		imageToFilter.image = photo
-		print("image to filter:")
-		print(imageToFilter.image)
+		
 		for _ in ImageInfo.filters {
+			let imageToFilter = PhotoInfo()
+			imageToFilter.image = photo
 			photos.append(imageToFilter)
 		}
 
@@ -93,8 +93,6 @@ class PostcardViewController: UIViewController {
 		
 		pendingOperations.filteringInProgress[indexPath] = filterer
 		pendingOperations.filtrationQueue.addOperation(filterer)
-		
-		print("called filtration function for \(indexPath)")
 	}
 	
 	
@@ -245,8 +243,6 @@ extension PostcardViewController: UICollectionViewDataSource {
 			cell.activityIndicator.stopAnimating()
 		}
 		
-		print(indexPath.row)
-		print(photoForCell.image)
 		//currentFilter = ImageInfo.filters[indexPath.row]
 		//applyProcessing(photoToProcess: cell.imageView)
 		

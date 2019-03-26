@@ -24,7 +24,6 @@ struct ImageInfo {
 		CIFilter(name: "CIColorMatrix")!,
 		CIFilter(name: "CIBoxBlur")!,
 		CIFilter(name: "CIColorPosterize")!,
-		CIFilter(name: "CICircleSplashDistortion")!,
 		CIFilter(name: "CICircularScreen")!,
 		CIFilter(name: "CIDotScreen")!,
 		CIFilter(name: "CICrystallize")!,
