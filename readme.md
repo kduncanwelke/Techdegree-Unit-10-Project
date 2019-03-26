@@ -6,6 +6,7 @@ This app uses the [NASA API](https://api.nasa.gov/api.html) in order to provide 
 
 The third and additional section allows exploration of the **Astronomy Photo of the Day** provided by NASA. Users can step through the photos day by day, or search for a given day, then see results. This feature incorporates the use of both photo and video display (via web view), as an APOD for a given day can also come in video format.
 
+All three of these features incorporate a feature which allows a user to tap on the primary image displayed, and see the full view. This allows zooming, so a user can explore the details of an image, which is especially useful when viewing the app on a small screen. 
 
 ## Dependencies
 
