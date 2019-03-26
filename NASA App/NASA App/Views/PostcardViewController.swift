@@ -278,6 +278,7 @@ extension PostcardViewController: UICollectionViewDelegate {
 			image.image = newImage
 		}
 	}
+}
 
 extension PostcardViewController: MFMailComposeViewControllerDelegate {
 	func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
