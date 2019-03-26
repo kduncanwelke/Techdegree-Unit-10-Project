@@ -25,24 +25,16 @@ class APODSearchViewController: UIViewController {
 		dateFormatter.dateFormat = "yyyy-MM-dd"
 		
 		submitButton.layer.cornerRadius = 10
+		
+		// set up date picker
 		datePicker.backgroundColor = UIColor.white
 		datePicker.maximumDate = currentDate
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 	
 	// MARK: Actions
 	
+	// when submit is pressed, pass date into search to display new result
 	@IBAction func submitButtonPressed(_ sender: UIButton) {
 		sender.animateButton()
 		let selectedDate = datePicker.date

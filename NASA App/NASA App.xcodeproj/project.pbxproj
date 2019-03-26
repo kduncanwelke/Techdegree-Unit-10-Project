@@ -42,6 +42,7 @@
 		2DA89E0B222480B3004266EB /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA89E0A222480B3004266EB /* DataManager.swift */; };
 		2DB076982234685C0076CFEB /* RefineSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB076972234685C0076CFEB /* RefineSearchViewController.swift */; };
 		2DD62B64223327E50026B521 /* Nuke.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DD62B63223327E50026B521 /* Nuke.framework */; };
+		2DDCE58722495135004CCAEA /* FilterHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDCE58622495135004CCAEA /* FilterHandling.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -94,6 +95,7 @@
 		2DA89E0A222480B3004266EB /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		2DB076972234685C0076CFEB /* RefineSearchViewController.swift */ = {isa = PBXFileReference; indentWidth = 5; lastKnownFileType = sourcecode.swift; path = RefineSearchViewController.swift; sourceTree = "<group>"; };
 		2DD62B63223327E50026B521 /* Nuke.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nuke.framework; path = Carthage/Build/iOS/Nuke.framework; sourceTree = "<group>"; };
+		2DDCE58622495135004CCAEA /* FilterHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterHandling.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -186,6 +188,7 @@
 				2DA89E0022247205004266EB /* Mars.swift */,
 				2DA89E022224766B004266EB /* Daily.swift */,
 				2DA5BDA0223857AE0079CB8D /* ImageInfo.swift */,
+				2DDCE58622495135004CCAEA /* FilterHandling.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -365,6 +368,7 @@
 				2DA545242240519D005FDE14 /* ZoomViewController.swift in Sources */,
 				2D91C65B22371CDA0087B97D /* PostcardViewController.swift in Sources */,
 				2D9E0AAF22307F5900FF8BCB /* LocationManager.swift in Sources */,
+				2DDCE58722495135004CCAEA /* FilterHandling.swift in Sources */,
 				2DA5BD9F223855A90079CB8D /* PostcardCollectionViewCell.swift in Sources */,
 				2D2F05CA2222186F00F3627F /* DailyPhotoSearch.swift in Sources */,
 				2DB076982234685C0076CFEB /* RefineSearchViewController.swift in Sources */,

@@ -8,6 +8,7 @@
 
 import Foundation
 
+// object to provide information for satellite earth imagery
 struct EarthSearch {
 	var latitude: Double
 	var longitude: Double

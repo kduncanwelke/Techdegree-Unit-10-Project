@@ -47,6 +47,7 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 		locationManager.desiredAccuracy = kCLLocationAccuracyBest
 		locationManager.startUpdatingLocation()
 		
+		// set ui up
 		image.image = photo
 		coordinatesLabel.text = "Lat: \(EarthSearch.earthSearch.latitude), Long: \(EarthSearch.earthSearch.longitude)"
 		let displayDate = date?.prefix(10)
@@ -57,6 +58,7 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 		resultsTableController.mapView = mapView
 		resultsTableController.delegate = self
 		
+		// set up search controller for map search
 		searchController = UISearchController(searchResultsController: resultsTableController)
 		searchController.searchResultsUpdater = resultsTableController
 		searchController.searchBar.autocapitalizationType = .none
@@ -78,7 +80,10 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 	// MARK: Custom functions
 	
 	func updateLocation(location: MKPlacemark) {
+		// current location is not being used
 		usingCurrentLocation = false
+		
+		// wipe annotations if location was updated
 		mapView.removeAnnotations(mapView.annotations)
 		
 		let coordinate = CLLocationCoordinate2D(latitude: EarthSearch.earthSearch.latitude, longitude: EarthSearch.earthSearch.longitude)
@@ -105,7 +110,7 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 				}
 			})
 		} else {
-			// otherwise use location that was included with location object
+			// otherwise use location that was included with location object, which came from a search
 			annotation.title = location.title
 		}
 		
@@ -113,6 +118,7 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 		mapView.addAnnotation(annotation)
 		mapView.setRegion(region, animated: true)
 		
+		// start loading earth imagery
 		self.activityIndicator.startAnimating()
 		DataManager<Earth>.fetch(with: nil) { [unowned self] result in
 			switch result {
@@ -124,10 +130,14 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 					}
 					let url = UrlHandling.getURL(imageUrl: photo.url)
 					guard let urlToLoad = url else { return }
+					
+					// use Nuke to load image
 					Nuke.loadImage(with: urlToLoad, options: ImageInfo.options, into: self.image) { [unowned self] response, _ in
 						self.image?.image = response?.image
 						self.activityIndicator.stopAnimating()
 					}
+					
+					// load other details
 					self.dateLabel.text = "\(photo.date)"
 					self.locationLabel.text = annotation.title
 					self.coordinatesLabel.text = "\(EarthSearch.earthSearch.latitude), \(EarthSearch.earthSearch.longitude)"
@@ -147,6 +157,7 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 	
 	// MARK: Navigation
 	
+	// segue to zoomed image view
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		if segue.destination is ZoomViewController {
 			let destinationViewController = segue.destination as? ZoomViewController
@@ -157,6 +168,7 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 	
 	// MARK: IBActions
 	
+	// if map is tapped, create placemark based on it, pass location to search object, and load satellite image
 	@IBAction func mapTapped(_ sender: UITapGestureRecognizer) {
 		if sender.state == .ended {
 			let tappedLocation = sender.location(in: mapView)
@@ -169,7 +181,7 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 		}
 	}
 	
-	
+	// show contact picker if button tapped
 	@IBAction func importContactButtonTapped(_ sender: UIButton) {
 		sender.animateButton()
 		let contactPicker = CNContactPickerViewController()
@@ -187,7 +199,7 @@ class EarthViewController: UIViewController, UITableViewDelegate {
 // add location functionality
 extension EarthViewController: CLLocationManagerDelegate, MKMapViewDelegate {
 	func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-		// only show location on map if no location was chosen
+		// only show location on map if no location has been selected via map or search
 		if usingCurrentLocation {
 			if let lat = locations.last?.coordinate.latitude, let long = locations.last?.coordinate.longitude, let location = locations.last {
 				locationManager.stopUpdatingLocation()
@@ -204,6 +216,7 @@ extension EarthViewController: CLLocationManagerDelegate, MKMapViewDelegate {
 					geocoder.reverseGeocodeLocation(lastLocation, completionHandler: { [unowned self] (placemarks, error) in
 						if error == nil {
 							guard let firstLocation = placemarks?[0] else { return }
+							// show location label in view
 							self.locationLabel.text = LocationManager.parseAddress(selectedItem: firstLocation)
 						}
 						else {
@@ -233,6 +246,7 @@ extension EarthViewController: UISearchControllerDelegate, UISearchResultsUpdati
 }
 
 extension EarthViewController: MapUpdaterDelegate {
+	// delegate used to pass location from search
 	func updateMapLocation(for location: MKPlacemark) {
 		updateLocation(location: location)
 	}
@@ -240,6 +254,7 @@ extension EarthViewController: MapUpdaterDelegate {
 
 extension EarthViewController: CNContactPickerDelegate {
 	func contactPicker(_ picker: CNContactPickerViewController, didSelect contact: CNContact) {
+		// get title for location based on postal address
 		guard let address = contact.postalAddresses.first?.value else { return }
 		locationFromMapTap = false
 		
@@ -249,8 +264,11 @@ extension EarthViewController: CNContactPickerDelegate {
 				guard let placemark = placemarks?[0], let location = placemark.location else { return }
 					let locale = MKPlacemark(coordinate: location.coordinate, postalAddress: address)
 				
+					// pass location into search object
 					EarthSearch.earthSearch.latitude = locale.coordinate.latitude
 					EarthSearch.earthSearch.longitude = locale.coordinate.longitude
+				
+					// update location so satellite view and map will show
 					self.updateLocation(location: locale)
 					print("did geocoding")
 					return

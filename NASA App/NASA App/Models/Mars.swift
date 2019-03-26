@@ -8,6 +8,7 @@
 
 import Foundation
 
+// mars rover imagery type, for parsing
 struct Mars: SearchType {
 	let photos: [Photo]
 	static var endpoint = Endpoint.mars

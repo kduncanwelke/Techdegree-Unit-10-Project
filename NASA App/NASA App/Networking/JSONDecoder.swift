@@ -8,6 +8,7 @@
 
 import Foundation
 
+// decoder for snakecase conversion
 extension JSONDecoder {
 	static var nasaApiDecoder: JSONDecoder {
 		let decoder = JSONDecoder()

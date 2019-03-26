@@ -19,6 +19,7 @@ extension UIViewController {
 }
 
 extension UIView {
+	// animate box style buttons with press animation
 	func animateButton() {
 		UIView.animate(withDuration: 0.2, animations: {
 			self.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
@@ -27,11 +28,5 @@ extension UIView {
 			self.transform = CGAffineTransform.identity
 			}
 		})
-	}
-	
-	func fadeIn() {
-		UIView.animate(withDuration: 1.0, animations: {
-			self.alpha = 1.0
-		}, completion: nil)
 	}
 }

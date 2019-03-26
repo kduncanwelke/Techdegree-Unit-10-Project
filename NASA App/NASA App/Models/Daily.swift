@@ -8,6 +8,7 @@
 
 import Foundation
 
+// daily photo type for APOD parsing
 struct Daily: SearchType {
 	var date: String
 	let title: String

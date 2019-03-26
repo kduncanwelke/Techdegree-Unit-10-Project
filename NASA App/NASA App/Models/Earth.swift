@@ -8,6 +8,7 @@
 
 import Foundation
 
+// earth satellite imagery parsing
 struct Earth: SearchType {
 	let date: String
 	let url: String

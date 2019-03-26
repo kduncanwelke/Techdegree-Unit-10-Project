@@ -30,6 +30,10 @@ class PostcardViewController: UIViewController {
 	let context = CIContext()
 	var currentFilter = ImageInfo.filters.first
 
+	var photos: [PhotoInfo] = []
+	let pendingOperations = PendingOperations()
+	let imageToFilter = PhotoInfo()
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -41,8 +45,14 @@ class PostcardViewController: UIViewController {
 		emailButton.layer.cornerRadius = 10
 		
 		image.image = photo
-	
-		applyProcessing(photoToProcess: image)
+		imageToFilter.image = photo
+		print("image to filter:")
+		print(imageToFilter.image)
+		for _ in ImageInfo.filters {
+			photos.append(imageToFilter)
+		}
+
+		//applyProcessing(photoToProcess: image)
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -63,6 +73,40 @@ class PostcardViewController: UIViewController {
 		}
 	}
 	
+	func startFiltration(for photo: PhotoInfo, at indexPath: IndexPath) {
+		guard pendingOperations.filteringInProgress[indexPath] == nil else {
+			return
+		}
+	
+		guard let filterToUse = currentFilter else { return }
+		let filterer = ImageFiltration(photo, filter: filterToUse)
+		filterer.completionBlock = {
+			if filterer .isCancelled {
+				return
+			}
+			
+			DispatchQueue.main.async {
+				self.pendingOperations.filteringInProgress.removeValue(forKey: indexPath)
+				self.collectionView.reloadItems(at: [indexPath])
+			}
+		}
+		
+		pendingOperations.filteringInProgress[indexPath] = filterer
+		pendingOperations.filtrationQueue.addOperation(filterer)
+		
+		print("called filtration function for \(indexPath)")
+	}
+	
+	
+	func startOperations(for photo: PhotoInfo, at indexPath: IndexPath) {
+		switch (photo.state) {
+		case .placeholder:
+			startFiltration(for: photo, at: indexPath)
+		case .filtered:
+			return
+		}
+	}
+	/*
 	func applyProcessing(photoToProcess: UIImageView) {
 		guard let currentImage = photoToProcess.image else { return }
 		let imageToUse = CIImage(image: currentImage)
@@ -73,7 +117,7 @@ class PostcardViewController: UIViewController {
 			let processedImage = UIImage(cgImage: cgImage)
 			photoToProcess.image = processedImage
 		}
-	}
+	}*/
 	
 	func textToImage(text: String, imageToUse: UIImage) -> UIImage {
 		let scale = UIScreen.main.scale
@@ -173,7 +217,7 @@ class PostcardViewController: UIViewController {
 		performSegue(withIdentifier: "postcardPreview", sender: Any?.self)
 		print("segue triggered")
 	}
-	
+
 	
 }
 
@@ -184,13 +228,28 @@ extension PostcardViewController: UICollectionViewDataSource {
 	
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "postcardCell", for: indexPath) as! PostcardCollectionViewCell
-		cell.imageView.image = photo
+		
+		let photoForCell = photos[indexPath.row]
+		currentFilter = ImageInfo.filters[indexPath.row]
+	
 		let filterTitle = ImageInfo.filters[indexPath.row].name.dropFirst(2)
 		cell.label.text = "\(filterTitle)"
-		cell.activityIndicator.startAnimating()
-		currentFilter = ImageInfo.filters[indexPath.row]
-		applyProcessing(photoToProcess: cell.imageView)
-		cell.activityIndicator.stopAnimating()
+		
+		switch (photoForCell.state) {
+		case .placeholder:
+			cell.imageView.image = UIImage(named: "placeholder")
+			cell.activityIndicator.startAnimating()
+			startOperations(for: photoForCell, at: indexPath)
+		case .filtered:
+			cell.imageView.image = photoForCell.image
+			cell.activityIndicator.stopAnimating()
+		}
+		
+		print(indexPath.row)
+		print(photoForCell.image)
+		//currentFilter = ImageInfo.filters[indexPath.row]
+		//applyProcessing(photoToProcess: cell.imageView)
+		
 		return cell
 	}
 }

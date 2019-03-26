@@ -49,6 +49,7 @@ class APODViewController: UIViewController {
 		dateLabel.text = currentPhoto.date
 		explanationLabel.text = currentPhoto.explanation
 		
+		// set up view depending on if APOD is video or not
 		if isVideo {
 			image.isHidden = true
 			webview.isHidden = false
@@ -60,20 +61,11 @@ class APODViewController: UIViewController {
 			image.image = photo
 		}
     }
-    
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 	
 	// MARK: Custom functions
 	
+	// when selection is changed, reconfigure view
 	func updateUI(for photo: Daily) {
 		if photo.mediaType == "video" {
 			activityIndicator.stopAnimating()
@@ -92,6 +84,8 @@ class APODViewController: UIViewController {
 			webview.isHidden = true
 			let url = UrlHandling.getURL(imageUrl: photo.url)
 			guard let urlToLoad = url else { return }
+			
+			// load image with Nuke
 			Nuke.loadImage(with: urlToLoad, options: ImageInfo.options, into: image) { [unowned self] response, _ in
 				self.image?.image = response?.image
 				self.activityIndicator.stopAnimating()
@@ -102,6 +96,7 @@ class APODViewController: UIViewController {
 		explanationLabel.text = photo.explanation
 	}
 	
+	// get new APOD result
 	func executeFetch() {
 		self.activityIndicator.startAnimating()
 		DataManager<Daily>.fetch(with: nil) { [unowned self] result in
@@ -130,6 +125,7 @@ class APODViewController: UIViewController {
 		}
 	}
 	
+	// turn date into string to pass into search
 	func getDate(date: Date?) {
 		guard let dateToStringify = date else { return }
 		let dateString = dateFormatter.string(from: dateToStringify)
@@ -140,6 +136,10 @@ class APODViewController: UIViewController {
 		executeFetch()
 	}
 	
+	
+	// MARK: Navigation
+	
+	// shows view where user can zoom on photo
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		if segue.destination is ZoomViewController {
 			let destinationViewController = segue.destination as? ZoomViewController
@@ -161,6 +161,7 @@ class APODViewController: UIViewController {
 	@IBAction func backButtonPressed(_ sender: Any) {
 		if currentDateDisplayed == firstDate {
 			print("dates equal")
+			// don't go back a day if there is no more recent result
 			return
 		} else {
 			let soonerDay = Calendar.current.date(byAdding: .day, value: 1, to: currentDateDisplayed)
@@ -172,6 +173,7 @@ class APODViewController: UIViewController {
 		performSegue(withIdentifier: "showPhoto", sender: Any?.self)
 	}
 	
+	// if returning from search, reload view
 	@IBAction func unwindToAPOD(segue: UIStoryboardSegue) {
 		executeFetch()
 	}

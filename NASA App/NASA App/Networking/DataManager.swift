@@ -8,6 +8,7 @@
 
 import Foundation
 
+// takes generic searchtype conforming object
 struct DataManager<T: SearchType> {
 	private static func fetch(url: URL, completion: @escaping (Result<T>) -> Void) {
 		Networker.fetchData(url: url) { result in

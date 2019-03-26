@@ -8,9 +8,10 @@
 
 import Foundation
 
+// provide search parameters for APOD search
 struct DailyPhotoSearch {
 	var date: String
 	
-	// return today's photo by default
+	// return today's photo by default, aka no date
 	static var photoSearch = DailyPhotoSearch(date: "")
 }

@@ -50,9 +50,30 @@ class ViewController: UIViewController {
 		
 		locationManager.delegate = self
 		locationManager.desiredAccuracy = kCLLocationAccuracyBest
-		//locationManager.requestLocation()
 		locationManager.startUpdatingLocation()
 		
+		// get APOD photo
+		getAPODPhoto()
+		
+		// retrieve random image from mars rovers
+		getRandomMarsPhoto()
+		
+		// get earth satellite image
+		getEarthPhoto()
+	}
+	
+	// navigation bar was showing when view should be full screen, reshow when changing views
+	override func viewWillAppear(_ animated: Bool) {
+		self.navigationController?.setNavigationBarHidden(true, animated: false)
+	}
+	
+	override func viewWillDisappear(_ animated: Bool) {
+		self.navigationController?.setNavigationBarHidden(false, animated: false)
+	}
+	
+	// MARK: Custom functions
+	
+	func getAPODPhoto() {
 		dailyPhotoActivityIndicator.startAnimating()
 		DataManager<Daily>.fetch(with: nil) { [unowned self] result in
 			switch result {
@@ -65,6 +86,7 @@ class ViewController: UIViewController {
 					
 					self.currentDaily = photo
 					
+					// if APOD actually contains a video, load it in webview and hide image, otherwise show image
 					if photo.mediaType == "video" {
 						self.isVideo = true
 						guard let url = URL(string: photo.url) else { return }
@@ -79,12 +101,14 @@ class ViewController: UIViewController {
 						self.currentDaily = photo
 						let url = UrlHandling.getURL(imageUrl: photo.url)
 						guard let urlToLoad = url else { return }
+						
+						// load image with NUke
 						Nuke.loadImage(with: urlToLoad, options: ImageInfo.options, into: self.dailyPhoto) { [unowned self] response, _ in
 							self.dailyPhoto?.image = response?.image
 							self.dailyPhotoActivityIndicator.stopAnimating()
 						}
 					}
-				
+					
 					self.dailyPhotoTitle.text = photo.title
 					self.dailyPhotoTitle.adjustsFontSizeToFitWidth = true
 				}
@@ -101,19 +125,7 @@ class ViewController: UIViewController {
 				}
 			}
 		}
-		
-		getRandomMarsPhoto()
 	}
-	
-	override func viewWillAppear(_ animated: Bool) {
-		self.navigationController?.setNavigationBarHidden(true, animated: false)
-	}
-	
-	override func viewWillDisappear(_ animated: Bool) {
-		self.navigationController?.setNavigationBarHidden(false, animated: false)
-	}
-	
-	// MARK: Custom functions
 	
 	func getEarthPhoto() {
 		earthPhotoActivityIndicator.startAnimating()
@@ -128,11 +140,14 @@ class ViewController: UIViewController {
 					self.currentEarth = photo
 					let url =  UrlHandling.getURL(imageUrl: photo.url)
 					guard let urlToLoad = url else { return }
+					
+					// load image with Nuke
 					Nuke.loadImage(with: urlToLoad, options: ImageInfo.options, into: self.earthPhoto) { [unowned self] response, _ in
 						self.earthPhoto?.image = response?.image
 						self.earthPhotoActivityIndicator.stopAnimating()
 					}
 					
+					// set labels to show latitude and longitude
 					self.earthPhotoTitle.text = "\(EarthSearch.earthSearch.latitude), \(EarthSearch.earthSearch.longitude)"
 				}
 			case .failure(let error):
@@ -157,8 +172,8 @@ class ViewController: UIViewController {
 			case .success(let response):
 				DispatchQueue.main.async {
 					guard let image = response.first?.photos.first?.imgSrc else {
-						//self.showAlert(title: "Connection failed", message: "Json response failed, please try again later.")
-						
+						// if no image was retrieved, there was no image for the random day chosen
+						// so re-randomize
 						MarsSearch.marsSearch.sol = Int.random(in: 0...2200)
 						print("re-randomized results")
 						self.getRandomMarsPhoto()
@@ -167,12 +182,16 @@ class ViewController: UIViewController {
 					self.currentRover = response.first
 					let url =  UrlHandling.getURL(imageUrl: image)
 					guard let urlToLoad = url else { return }
+					
+					// load image with Nuke
 					Nuke.loadImage(with: urlToLoad, options: ImageInfo.options, into: self.roverPhoto) { [unowned self] response, _ in
 						self.roverPhoto?.image = response?.image
 						self.roverPhotoActivityIndicator.stopAnimating()
 					}
 					
 					guard let title = response.first?.photos.first else { return }
+					
+					// set text to reflect result
 					self.marsPhotoTitle.text = "\(title.rover.name), \(title.earthDate)"
 				}
 			case .failure(let error):
@@ -190,7 +209,9 @@ class ViewController: UIViewController {
 		}
 	}
 	
+	// MARK: Navigation
 	
+	// pass currently shown data to next views for ease and speed
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		if segue.destination is APODViewController {
 			let destinationViewController = segue.destination as? APODViewController
@@ -235,11 +256,13 @@ class ViewController: UIViewController {
 	}
 }
 
+// get location, used to show satellite imagery of user's current location
 extension ViewController: CLLocationManagerDelegate {
 	func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
 		if let lat = locations.last?.coordinate.latitude, let long = locations.last?.coordinate.longitude, let location = locations.last {
 			print("current location: \(lat) \(long)")
 			
+			// assign coordinates to search item
 			EarthSearch.earthSearch.latitude = lat
 			EarthSearch.earthSearch.longitude = long
 			
@@ -250,6 +273,7 @@ extension ViewController: CLLocationManagerDelegate {
 			locationManager.stopUpdatingLocation()
 		} else {
 			showAlert(title: "Geolocation failed", message: "Coordinates could not be found. Please check that location services are enabled.")
+			// if no location is retrieved, default values will be used
 		}
 	}
 	

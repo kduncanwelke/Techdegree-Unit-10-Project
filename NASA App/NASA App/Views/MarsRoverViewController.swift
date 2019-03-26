@@ -65,12 +65,15 @@ class MarsRoverViewController: UIViewController {
 	
 	// MARK: Custom functions
 	
+	// load mars data
 	func loadData() {
 		DataManager<Mars>.fetch(with: currentPage) { [unowned self] result in
 			switch result {
 			case .success(let response):
 				DispatchQueue.main.async {
 					guard let response = response.first?.photos, let first = response.first else {
+						// if no image was retrieved, there was no image for the random day chosen
+						// so re-randomize
 						MarsSearch.marsSearch.sol = Int.random(in: 0...2200)
 						print("re-randomized results")
 						self.loadData()
@@ -78,9 +81,13 @@ class MarsRoverViewController: UIViewController {
 					}
 					
 					self.loadUI(photo: first)
+					
+					// add photos to list to display
 					for photo in response {
 						self.marsPhotos.append(photo)
 					}
+					
+					// reload collection view to show data
 					self.collectionView.reloadData()
 				}
 			case .failure(let error):
@@ -96,14 +103,19 @@ class MarsRoverViewController: UIViewController {
 		}
 	}
 	
+	// load a given photo into the main view (used when cell is selected)
 	func loadUI(photo: Photo) {
 		activityIndicator.startAnimating()
 		let url = UrlHandling.getURL(imageUrl: photo.imgSrc)
 		guard let urlToLoad = url else { return }
+		
+		// load with Nuke
 		Nuke.loadImage(with: urlToLoad, options: ImageInfo.options, into: image) { [unowned self] response, _ in
 			self.image?.image = response?.image
 			self.activityIndicator.stopAnimating()
 		}
+		
+		// show other info
 		titleLabel.text = photo.rover.name
 		dateLabel.text = photo.earthDate
 		solLabel.text = "\(photo.sol)"
@@ -111,6 +123,7 @@ class MarsRoverViewController: UIViewController {
 		fullCameraNameLabel.text = photo.camera.fullName
 	}
 	
+	// called when user scrolls to see more beyond first page
 	func fetchMorePhotos() {
 		currentPage += 1
 		DataManager<Mars>.fetch(with: currentPage) { [unowned self] result in
@@ -122,6 +135,7 @@ class MarsRoverViewController: UIViewController {
 						return
 					}
 					
+					// insert items into collection view
 					for photo in response {
 						self.marsPhotos.append(photo)
 						self.collectionView.insertItems(at: [IndexPath(item: self.marsPhotos.count - 1, section: 0)])
@@ -144,7 +158,7 @@ class MarsRoverViewController: UIViewController {
 	
     // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    // segues to make postcard and view zoomed photo
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		if segue.destination is PostcardViewController {
 			let destinationViewController = segue.destination as? PostcardViewController
@@ -160,6 +174,7 @@ class MarsRoverViewController: UIViewController {
 	
 	// MARK: IBActions
 	
+	// if returning from search, wipe all pre-existing photos and reload view
 	@IBAction func unwindToRover(segue: UIStoryboardSegue) {
 		marsPhotos.removeAll()
 		viewDidLoad()
@@ -169,6 +184,7 @@ class MarsRoverViewController: UIViewController {
 	@IBAction func randomizeButtonPressed(_ sender: UIButton) {
 		sender.animateButton()
 		
+		// generate random result when randomize button is pressed
 		MarsSearch.marsSearch.sol = Int.random(in: 0...2200)
 		MarsSearch.marsSearch.rover = {
 			let randomRover = Int.random(in: 1...3)
@@ -185,9 +201,13 @@ class MarsRoverViewController: UIViewController {
 		
 		// reset pagination
 		currentPage = 1
+		
+		// wipe existing photos
 		marsPhotos.removeAll()
 		
 		loadData()
+		
+		// scroll back to the beginning of the collection view
 		if marsPhotos.count > 0 {
 			collectionView.scrollsToTop = true
 		}
@@ -219,6 +239,7 @@ extension MarsRoverViewController: UICollectionViewDataSource {
 		
 		cell.cellActivityIndicator.startAnimating()
 		if let urlToLoad = url {
+			// load image with Nuke
 			Nuke.loadImage(with: urlToLoad, options: ImageInfo.options, into: cell.image) { [unowned self] response, _ in
 				cell.image?.image = response?.image
 				cell.cellActivityIndicator.stopAnimating()
@@ -231,12 +252,14 @@ extension MarsRoverViewController: UICollectionViewDataSource {
 
 extension MarsRoverViewController: UICollectionViewDataSourcePrefetching {
 	func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+		// use prefetch to retrieve more photos on scroll
 		fetchMorePhotos()
 	}
 }
 
 extension MarsRoverViewController: UICollectionViewDelegate {
 	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+		// load image when selected
 		loadUI(photo: marsPhotos[indexPath.row])
 	}
 }

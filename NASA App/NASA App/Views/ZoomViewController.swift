@@ -29,6 +29,7 @@ class ZoomViewController: UIViewController {
 		guard let imageToZoom = image else { return }
 		imageView.image = imageToZoom
 		
+		// dismiss zoomed view with tap
 		let tap = UITapGestureRecognizer(target: self, action: #selector(dismissFullscreenImage))
 		scrollView.addGestureRecognizer(tap)
     }
@@ -43,7 +44,7 @@ class ZoomViewController: UIViewController {
 		dismiss(animated: true, completion: nil)
 	}
 	
-	
+	// allow zooming in but limit zooming out to size where image fits on screen
 	func updateZoom(_ size: CGSize) {
 		let boundsSize = view.bounds.size
 		let imageSize = imageView.bounds.size
@@ -80,6 +81,7 @@ class ZoomViewController: UIViewController {
 	}
 }
 
+// handle scrollview functions of image
 extension ZoomViewController: UIScrollViewDelegate {
 	func viewForZooming(in scrollView: UIScrollView) -> UIView? {
 		return imageView

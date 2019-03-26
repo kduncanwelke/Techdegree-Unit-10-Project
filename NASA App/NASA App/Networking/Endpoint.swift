@@ -21,6 +21,7 @@ enum Endpoint {
 		return "vBxrgOjlUm93Xn3RWcMHgg3RUNOSAosuRKPMIj0U"
 	}
 	
+	// generate url based on type
 	func url(with page: Int?) -> URL {
 		switch self {
 		case .earth:
@@ -42,7 +43,7 @@ enum Endpoint {
 				return components!.url!
 			}
 			
-			// if earth date has been set, use it instead of mars sol
+			// if earth date has been set, aka from search, use it instead of mars sol
 			var components = URLComponents(url: baseURL.appendingPathComponent("mars-photos/api/v1/rovers/\(rover)/photos"), resolvingAgainstBaseURL: false)
 			components!.queryItems = [URLQueryItem(name: "earth_date", value: "\(earthDate)"), URLQueryItem(name: "page", value: "\(page ?? 1)"), URLQueryItem(name: "api_key", value: "\(key)")]
 			return components!.url!

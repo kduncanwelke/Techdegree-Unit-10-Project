@@ -9,6 +9,7 @@
 import Foundation
 import CoreLocation
 
+// handle address parsing, used in map view for earth satellite imagery
 struct LocationManager {
 	static func parseAddress(selectedItem: CLPlacemark) -> String {
 		// put a space between "4" and "Melrose Place"

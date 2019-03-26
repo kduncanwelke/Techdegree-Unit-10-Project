@@ -8,13 +8,16 @@
 
 import Foundation
 
+// object to provide search parameters for rover imagery
 struct MarsSearch {
 	var sol: Int
 	var rover: Rover
 	var earthDate: String?
 	
+	// produce randomized sol initially for first view
 	static var solDate = Int.random(in: 0...2200)
 	
+	// produce randomized rover initially for first view
 	static var chosenRover: Rover = {
 		let randomRover = Int.random(in: 1...3)
 		if randomRover == 1 {

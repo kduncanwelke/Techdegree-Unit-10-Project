@@ -15,12 +15,14 @@ class LocationSearchTableViewController: UITableViewController {
 	var resultsList: [MKMapItem] = [MKMapItem]()
 	var mapView: MKMapView? = nil
 	
+	// delegate to pass search back to earth view controller
 	weak var delegate: MapUpdaterDelegate?
 	
 	override func viewDidLoad() {
 		self.tableView.delegate = self
 		self.tableView.dataSource = self
 		
+		// set up table view qualities
 		tableView.register(UITableViewCell.self, forCellReuseIdentifier: "searchCell")
 		tableView.backgroundColor = UIColor(red:0.00, green:0.00, blue:0.00, alpha:1.0)
 	}
@@ -34,10 +36,13 @@ class LocationSearchTableViewController: UITableViewController {
 		cell = UITableViewCell.init(style: .subtitle, reuseIdentifier: "searchCell")
 		cell.backgroundColor = UIColor(red:0.00, green:0.00, blue:0.00, alpha:1.0)
 		
+		// get map placemark and details
 		let selectedItem = resultsList[indexPath.row].placemark
 		cell.textLabel?.text = selectedItem.name
 		cell.textLabel!.textColor = UIColor.white
 		cell.detailTextLabel!.textColor = UIColor.lightGray
+		
+		// parse address to show in cell
 		cell.detailTextLabel?.text = LocationManager.parseAddress(selectedItem: selectedItem)
 		return cell
 	}
@@ -45,9 +50,11 @@ class LocationSearchTableViewController: UITableViewController {
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let selectedLocation = resultsList[indexPath.row].placemark
 		
+		// pass coordinates into search object
 		EarthSearch.earthSearch.latitude = selectedLocation.coordinate.latitude
 		EarthSearch.earthSearch.longitude = selectedLocation.coordinate.longitude
 		
+		// update location on map when back in earth view controller
 		delegate?.updateMapLocation(for: selectedLocation)
 		
 		self.dismiss(animated: true, completion: nil)

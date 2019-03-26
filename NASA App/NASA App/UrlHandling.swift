@@ -9,7 +9,7 @@
 import Foundation
 
 struct UrlHandling {
-	// ensure urls come as https
+	// ensure urls come as https, some come in http format and need to be converted
 	static func getURL(imageUrl: String) -> URL? {
 		var chosenUrl = ""
 		
